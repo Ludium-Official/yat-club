@@ -1,8 +1,8 @@
 import { createAppSlice } from "@/lib/createAppSlice";
 import { PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { WepinLogin } from "@wepin/login-js";
+import { WepinSDK } from "@wepin/sdk-js";
 
-let wepinLoginInstance: WepinLogin | null = null;
+let wepinSdk: WepinSDK | null = null;
 
 export interface UserSliceState {
   isInitialized: boolean;
@@ -12,16 +12,20 @@ const initialState: UserSliceState = {
   isInitialized: false,
 };
 
-export const initializeWepinLogin = createAsyncThunk(
+export const initializeWepinWidget = createAsyncThunk(
   "wepin-login/initialize",
   async (_, { dispatch }) => {
     if (typeof window !== "undefined") {
-      const { WepinLogin } = await import("@wepin/login-js");
-      wepinLoginInstance = new WepinLogin({
+      const { WepinSDK } = await import("@wepin/sdk-js");
+      wepinSdk = new WepinSDK({
         appId: process.env.NEXT_PUBLIC_WEPIN_APP_ID as string,
         appKey: process.env.NEXT_PUBLIC_WEPIN_APP_KEY as string,
       });
-      await wepinLoginInstance.init();
+      await wepinSdk.init({
+        type: "hide",
+        defaultLanguage: "ko",
+        defaultCurrency: "KRW",
+      });
       dispatch(setIsInitialized(true));
     }
   }
@@ -46,4 +50,4 @@ export const { setIsInitialized } = loginSlice.actions;
 
 export const { selectIsInitialized } = loginSlice.selectors;
 
-export const getWepinLoginInstance = () => wepinLoginInstance;
+export const getWepinSDK = () => wepinSdk;
