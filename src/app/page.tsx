@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
+import Wrapper from "@/components/Wrapper/Wrapper";
 
 export default function Home() {
   return (
-    <div>
+    <Wrapper>
       Home<Button variant="outline">Button</Button>
-    </div>
+    </Wrapper>
   );
 }

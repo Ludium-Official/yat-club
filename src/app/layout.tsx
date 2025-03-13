@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import type { Metadata } from "next";
-import { Provider } from "./provider";
+import { StoreProvider } from "./StoreProvider";
 
 export const metadata: Metadata = {
   title: "Yat Club",
@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Provider>{children}</Provider>
+        <StoreProvider>{children}</StoreProvider>
       </body>
     </html>
   );
