@@ -25,6 +25,7 @@ Yat Clubs makes enjoying the yacht much lighter through token based membership. 
 Through Yat Club, more community members can access the luxurious lifestyle of a yacht owner at a much affordable price and a wider range of services
 
 # System Architecture
+![Yat Club Architecture](https://github.com/Ludium-Official/yat-club/blob/main/Yat%20Club%20System%20Architecture.png?raw=true)
 
 Yat Club Portal is the platform where service providers (ie. Yacht Owners) and users (ie. Yatch party enjoyers) interact. There are four primary features:
 
@@ -45,6 +46,7 @@ Yat Club portal is a event reservation service before a Web3 project. For this, 
 References above are the current considerations. As the system develops, the team may select solutions that are aligned with the same principle but provide a better experience
 
 # Growth strategy
+![Yat Club Architecture](https://github.com/Ludium-Official/yat-club/blob/main/Yat%20Club%20Growth%20Strategy.png?raw=true)
 
 * In the beginning, Yat Clubs operate events with yachts delegated to the club from the owners. We sign contracts with the Yacht owners which shares service fees generated from the event. Also, we promise a portion of payment in $YAT. In this way, service providers are incentivized with both operation rate and the $YAT price appreciation
 * Users are enjoyers who purchase service based on the value they see. What they need more than anything is a good service experience. As long as the quality yacht events are listed at an affordable price, they are likely to purchase the service
