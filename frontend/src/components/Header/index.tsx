@@ -1,22 +1,21 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { selectBalances, setBalances } from "@/lib/features/wepin/balanceSlice";
+import { setBalances } from "@/lib/features/wepin/balanceSlice";
 import {
   getWepinSDK,
   selectIsLoggedIn,
   setIsLoggedIn,
 } from "@/lib/features/wepin/loginSlice";
+import fetchData from "@/lib/fetchData";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { prop, uniqBy } from "ramda";
+import { isEmpty, prop, uniqBy } from "ramda";
 import { useCallback, useEffect, useState } from "react";
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const wepinSDK = getWepinSDK();
 
-  const userBalance = useAppSelector(selectBalances);
-  console.log(userBalance);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -36,7 +35,7 @@ const Header: React.FC = () => {
       if (wepinStatus === "login") {
         try {
           setIsLoggingIn(true);
-          getBalance();
+          await getBalance();
         } catch (err) {
           console.error(err);
         } finally {
@@ -53,11 +52,22 @@ const Header: React.FC = () => {
 
     try {
       const user = await wepinSDK.loginWithUI();
-      console.log(user);
-      getBalance();
+      const findUser = await fetchData("/user", "POST", {
+        userId: user.userInfo?.userId,
+      });
+
+      if (isEmpty(findUser)) {
+        await fetchData("/register", "POST", {
+          email: user.userInfo?.email,
+          provider: user.userInfo?.provider,
+          userId: user.userInfo?.userId,
+          walletId: user.walletId,
+        });
+      }
+
+      await getBalance();
     } catch (err) {
       console.error(err);
-      return null;
     } finally {
       setIsLoggingIn(false);
     }
@@ -69,7 +79,6 @@ const Header: React.FC = () => {
       dispatch(setIsLoggedIn(false));
     } catch (err) {
       console.error(err);
-      return null;
     }
   };
 
