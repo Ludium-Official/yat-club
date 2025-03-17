@@ -10,6 +10,7 @@
     "run-pwa": "npm run build && npm start"
   },
   "dependencies": {
+    "@moonpay/moonpay-react": "^1.8.10",
     "@radix-ui/react-slot": "^1.1.2",
     "@reduxjs/toolkit": "^2.6.1",
     "@tanstack/react-query": "^5.67.3",
