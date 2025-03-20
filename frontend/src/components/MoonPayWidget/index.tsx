@@ -8,29 +8,42 @@ const MoonPayBuyWidget = dynamic(
 
 interface IBuyCryptoWidgetProps {
   price: string;
+  token: string;
+  address: string;
   onPurchaseComplete: (data: any) => Promise<void>;
 }
 
 const BuyCryptoWidget: React.FC<IBuyCryptoWidgetProps> = ({
   price,
+  token,
+  address,
   onPurchaseComplete,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
+  const calculateTotalAmount = (amount: number) => {
+    const moonPayFee = amount * 0.045;
+    const networkFee = amount * 0.01;
+    return amount + moonPayFee + networkFee;
+  };
+
+  const totalAmount = calculateTotalAmount(parseFloat(price)).toFixed(2);
+
   return (
     <div>
       <button onClick={() => setIsVisible(true)}>Buy Crypto</button>
-      {/* 돈이 수정 됨, token 받을 주소 지정해야 함 -> 이걸 회사 계정으로 하면 편하게 끝낼 수 있음 방법 찾아봐야 할 듯 */}
       <MoonPayBuyWidget
         variant="overlay"
-        baseCurrencyCode="usd"
-        baseCurrencyAmount={price}
-        defaultCurrencyCode="eth"
+        baseCurrencyAmount={totalAmount}
+        currencyCode={token}
         visible={isVisible}
+        walletAddress={address}
+        lockAmount="true"
         onTransactionCompleted={async (data) => {
-          console.log("Purchase Completed:", data);
-          setIsVisible(false);
-          await onPurchaseComplete(data); // 구매 완료 후 콜백 호출
+          if (data.status === "completed") {
+            await onPurchaseComplete(data);
+            setIsVisible(false);
+          }
         }}
       />
     </div>

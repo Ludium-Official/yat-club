@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const db = require("./db");
@@ -15,10 +16,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
-
-// https://api.moonpay.com/v3/currencies/eth/buy_quote?baseCurrencyCode=usd&paymentMethod=credit_debit_card&baseCurrencyAmount=20&apiKey=pk_test_rzPGsiZKEgaKOgWXh8aVTlLOcdP0Lke&fixed=true
-// fixed=true로 하면 signature도 나옴
-// buy_quote -> from_quote
 
 // Users
 app.post("/user", withAuth, (req, res) => {

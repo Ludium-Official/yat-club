@@ -30,7 +30,7 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <MoonPayProvider apiKey="pk_test_rzPGsiZKEgaKOgWXh8aVTlLOcdP0Lke" debug>
+    <MoonPayProvider apiKey={process.env.NEXT_PUBLIC_MOONPAY_API_KEY || ""}>
       <Provider store={storeRef.current}>
         <QueryClientProvider client={queryClient}>
           {children}

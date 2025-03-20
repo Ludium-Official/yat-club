@@ -15,10 +15,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <script
-        defer
-        src="https://static.moonpay.com/web-sdk/v1/moonpay-web-sdk.min.js"
-      ></script>
       <body>
         <StoreProvider>{children}</StoreProvider>
       </body>
