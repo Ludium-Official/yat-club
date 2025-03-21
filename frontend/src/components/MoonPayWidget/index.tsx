@@ -10,7 +10,7 @@ interface IBuyCryptoWidgetProps {
   price: string;
   token: string;
   address: string;
-  onPurchaseComplete: (data: any) => Promise<void>;
+  onPurchaseComplete: (data: unknown) => Promise<void>;
 }
 
 const BuyCryptoWidget: React.FC<IBuyCryptoWidgetProps> = ({

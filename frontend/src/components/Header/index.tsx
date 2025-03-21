@@ -1,40 +1,60 @@
 "use client";
 
+import HeaderLogo from "@/assets/Header/HeaderLogo.svg";
+import ImgComponent from "@/components/Image";
 import { Button } from "@/components/ui/button";
 import { setBalances } from "@/lib/features/wepin/balanceSlice";
 import {
-  getWepinSDK,
   selectIsLoggedIn,
   setIsLoggedIn,
+  setUserInfo,
 } from "@/lib/features/wepin/loginSlice";
+import {
+  accountsSDK,
+  balanceSDK,
+  statusSDK,
+  userLoginSDK,
+} from "@/lib/features/wepin/useWepin";
 import fetchData from "@/lib/fetchData";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { isEmpty, prop, uniqBy } from "ramda";
+import Link from "next/link";
+import { isEmpty } from "ramda";
 import { useCallback, useEffect, useState } from "react";
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
-  const wepinSDK = getWepinSDK();
 
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
+  const callUser = useCallback(async () => {
+    const user = await userLoginSDK();
+    const findUser = await fetchData("/user", "POST", {
+      userId: user.userInfo?.userId,
+    });
+
+    dispatch(setUserInfo(!isEmpty(findUser) ? findUser[0] : null));
+
+    return findUser;
+  }, [dispatch]);
+
   const getBalance = useCallback(async () => {
-    const removeDuplicates = uniqBy(prop("network"));
-    const accounts = removeDuplicates(await wepinSDK.getAccounts());
-    const balances = await wepinSDK.getBalance(accounts);
+    dispatch(setIsLoggedIn(true));
+
+    const accounts = await accountsSDK();
+    const balances = await balanceSDK(accounts);
 
     dispatch(setBalances(balances));
-    dispatch(setIsLoggedIn(true));
-  }, [dispatch, wepinSDK]);
+  }, [dispatch]);
 
   useEffect(() => {
     const status = async () => {
-      const wepinStatus = await wepinSDK.getStatus();
+      const wepinStatus = await statusSDK();
 
       if (wepinStatus === "login") {
         try {
           setIsLoggingIn(true);
+          await callUser();
           await getBalance();
         } catch (err) {
           console.error(err);
@@ -45,18 +65,15 @@ const Header: React.FC = () => {
     };
 
     status();
-  }, [dispatch, getBalance, isLoggedIn, wepinSDK]);
+  }, [callUser, dispatch, getBalance, isLoggedIn]);
 
   const login = async () => {
     setIsLoggingIn(true);
 
     try {
-      const user = await wepinSDK.loginWithUI();
-      const findUser = await fetchData("/user", "POST", {
-        userId: user.userInfo?.userId,
-      });
+      const user = await callUser();
 
-      if (isEmpty(findUser)) {
+      if (isEmpty(user)) {
         await fetchData("/register", "POST", {
           email: user.userInfo?.email,
           provider: user.userInfo?.provider,
@@ -73,28 +90,29 @@ const Header: React.FC = () => {
     }
   };
 
-  const logout = async () => {
-    try {
-      await wepinSDK.logout();
-      dispatch(setIsLoggedIn(false));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const openWidget = async () => await wepinSDK.openWidget();
+  const buttonText = isLoggingIn ? "Ing..." : "Login";
+  const buttonOnClick = isLoggingIn ? undefined : login;
 
   return (
-    <div>
+    <div className="flex items-center justify-between mx-16 my-20">
+      <Link href="/">
+        <ImgComponent imgSrc={HeaderLogo.src} />
+      </Link>
       {isLoggedIn ? (
-        <>
-          <Button onClick={logout}>Logout</Button>
-          <Button onClick={openWidget}>Open Widget</Button>
-        </>
-      ) : isLoggingIn ? (
-        <Button disabled>ing...</Button>
+        <Link
+          className="bg-brand rounded-full px-10 py-8 text-white"
+          href="/mypage"
+        >
+          Mypage
+        </Link>
       ) : (
-        <Button onClick={login}>Login</Button>
+        <Button
+          onClick={buttonOnClick}
+          className="bg-brand"
+          disabled={isLoggingIn && !isLoggedIn}
+        >
+          {buttonText}
+        </Button>
       )}
     </div>
   );

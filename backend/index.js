@@ -45,6 +45,39 @@ app.post("/register", withAuth, (req, res) => {
   });
 });
 
+// Events
+app.post("/events", withAuth, (req, res) => {
+  const { isPast } = req.body;
+  let query = "SELECT * FROM yatClub.Events";
+
+  if (isPast) {
+    query += " WHERE start_at < NOW()";
+  } else {
+    query += " WHERE start_at >= NOW()";
+  }
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Database query error");
+    }
+    res.json(results);
+  });
+});
+
+app.post("/event", withAuth, (req, res) => {
+  const { id } = req.body;
+  const query = "SELECT * FROM yatClub.Events WHERE id = ?";
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Database query error");
+    }
+    res.json(results[0]);
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

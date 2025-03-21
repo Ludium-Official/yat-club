@@ -24,11 +24,11 @@ const Wrapper: React.FC<WrapperProps> = ({ children }) => {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="relative max-w-[50rem] min-h-screen m-auto text-[1.4rem]">
       {isInitialized ? (
         <>
           <Header />
-          <div>{children}</div>
+          <div className="mx-20">{children}</div>
         </>
       ) : (
         <p>Loading...</p>

@@ -1,4 +1,5 @@
 import { createAppSlice } from "@/lib/createAppSlice";
+import { UserType } from "@/types/userType";
 import { PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { WepinSDK } from "@wepin/sdk-js";
 
@@ -7,11 +8,13 @@ let wepinSdk: WepinSDK;
 export interface UserSliceState {
   isInitialized: boolean;
   isLoggedIn: boolean;
+  userInfo: UserType | null;
 }
 
 const initialState: UserSliceState = {
   isInitialized: false,
   isLoggedIn: false,
+  userInfo: null,
 };
 
 export const initializeWepinWidget = createAsyncThunk(
@@ -46,15 +49,23 @@ export const loginSlice = createAppSlice({
     setIsLoggedIn: create.reducer((state, action: PayloadAction<boolean>) => {
       state.isLoggedIn = action.payload;
     }),
+    setUserInfo: create.reducer(
+      (state, action: PayloadAction<UserType | null>) => {
+        state.userInfo = action.payload;
+      }
+    ),
   }),
   selectors: {
     selectIsInitialized: (state: UserSliceState) => state.isInitialized,
     selectIsLoggedIn: (state: UserSliceState) => state.isLoggedIn,
+    selectUserInfo: (state: UserSliceState) => state.userInfo,
   },
 });
 
-export const { setIsInitialized, setIsLoggedIn } = loginSlice.actions;
+export const { setIsInitialized, setIsLoggedIn, setUserInfo } =
+  loginSlice.actions;
 
-export const { selectIsInitialized, selectIsLoggedIn } = loginSlice.selectors;
+export const { selectIsInitialized, selectIsLoggedIn, selectUserInfo } =
+  loginSlice.selectors;
 
 export const getWepinSDK = () => wepinSdk;
