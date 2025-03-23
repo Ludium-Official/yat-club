@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import type { Metadata } from "next";
+import { Toaster } from "sonner";
 import { StoreProvider } from "./StoreProvider";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <StoreProvider>{children}</StoreProvider>
+        <Toaster />
       </body>
     </html>
   );

@@ -7,6 +7,7 @@ import {
 } from "@/lib/features/wepin/loginSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { useEffect } from "react";
+import Footer from "../Footer";
 
 interface WrapperProps {
   children: React.ReactNode;
@@ -28,10 +29,11 @@ const Wrapper: React.FC<WrapperProps> = ({ children }) => {
       {isInitialized ? (
         <>
           <Header />
-          <div className="mx-20">{children}</div>
+          <div className="mx-20 pb-115">{children}</div>
+          <Footer />
         </>
       ) : (
-        <p>Loading...</p>
+        <div className="flex items-center justify-center h-dvh">Loading...</div>
       )}
     </div>
   );

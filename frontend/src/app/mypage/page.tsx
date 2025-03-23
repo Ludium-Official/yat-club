@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Wrapper from "@/components/Wrapper/Wrapper";
+import Wrapper from "@/components/Wrapper";
 import {
   getWepinSDK,
   selectUserInfo,
@@ -56,6 +56,7 @@ export default function Mypage() {
         <div>
           <div>Email: {userInfo.email}</div>
           <div>Point: {userInfo.yatPoint}</div>
+          <div>Create Date: {userInfo.created_at}</div>
         </div>
       ) : (
         <div>null</div>

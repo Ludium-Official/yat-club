@@ -94,13 +94,13 @@ const Header: React.FC = () => {
   const buttonOnClick = isLoggingIn ? undefined : login;
 
   return (
-    <div className="flex items-center justify-between mx-16 my-20">
+    <div className="flex items-center justify-between px-20 py-10">
       <Link href="/">
         <ImgComponent imgSrc={HeaderLogo.src} />
       </Link>
       {isLoggedIn ? (
         <Link
-          className="bg-brand rounded-full px-10 py-8 text-white"
+          className="bg-transparent border border-sky-blue rounded-[0.8rem] px-12 py-6 text-sky-blue"
           href="/mypage"
         >
           Mypage
@@ -108,7 +108,7 @@ const Header: React.FC = () => {
       ) : (
         <Button
           onClick={buttonOnClick}
-          className="bg-brand"
+          className="bg-transparent border border-sky-blue text-sky-blue"
           disabled={isLoggingIn && !isLoggedIn}
         >
           {buttonText}

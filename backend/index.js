@@ -78,6 +78,35 @@ app.post("/event", withAuth, (req, res) => {
   });
 });
 
+// Reservations
+app.post("/reservation", withAuth, (req, res) => {
+  const { id, userId } = req.body;
+  const query =
+    "SELECT * FROM yatClub.Reservations WHERE event_id = ? AND user_id = ?";
+
+  db.query(query, [id, userId], (err, results) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Database query error");
+    }
+    res.json(results[0]);
+  });
+});
+
+app.post("/booking", withAuth, (req, res) => {
+  const { userId, eventId, payMethod } = req.body;
+  const query =
+    "INSERT INTO yatClub.Reservations (user_id, event_id, pay_method) VALUES (?, ?, ?)";
+
+  db.query(query, [userId, eventId, payMethod], (err, results) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Database query error");
+    }
+    res.json(results);
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

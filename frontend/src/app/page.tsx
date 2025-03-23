@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Wrapper from "@/components/Wrapper/Wrapper";
+import Wrapper from "@/components/Wrapper";
 import fetchData from "@/lib/fetchData";
 import { EventType } from "@/types/eventType";
 import Link from "next/link";
@@ -25,13 +25,15 @@ export default function Home() {
 
   return (
     <Wrapper>
-      <Button onClick={() => setIsPast((prev) => !prev)}>Change</Button>
-      <div className="flex flex-col gap-3">
-        {events.map((event) => (
-          <Link key={event.id} href={`/event/${event.id}`}>
-            {event.title}
-          </Link>
-        ))}
+      <div className="mt-10">
+        <Button onClick={() => setIsPast((prev) => !prev)}>Change</Button>
+        <div className="flex flex-col gap-3">
+          {events.map((event) => (
+            <Link key={event.id} href={`/event/${event.id}`}>
+              {event.title}
+            </Link>
+          ))}
+        </div>
       </div>
     </Wrapper>
   );
