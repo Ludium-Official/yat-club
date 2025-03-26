@@ -29,7 +29,7 @@ const Wrapper: React.FC<WrapperProps> = ({ children }) => {
       {isInitialized ? (
         <>
           <Header />
-          <div className="mx-20 pb-115">{children}</div>
+          <div className="pb-115">{children}</div>
           <Footer />
         </>
       ) : (

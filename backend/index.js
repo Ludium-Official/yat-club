@@ -56,6 +56,8 @@ app.post("/events", withAuth, (req, res) => {
     query += " WHERE start_at >= NOW()";
   }
 
+  query += " order by start_at";
+
   db.query(query, (err, results) => {
     if (err) {
       console.error(err.message);

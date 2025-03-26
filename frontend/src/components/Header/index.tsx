@@ -81,6 +81,7 @@ const Header: React.FC = () => {
     try {
       const user = await callUser();
 
+      //TODO: 이거 새로운걸로 했을때 안됐음 테스트 해야 함
       if (!user.isSignIn) {
         await fetchData("/register", "POST", {
           email: user.userData?.email,

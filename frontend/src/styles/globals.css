@@ -58,8 +58,8 @@
 :root {
   --brand: #4537ff;
   --blue: #1c74f9;
-  --sky-blue: #87b8ff;
-  --gradient-blue: linear-gradient(to right #007dfe 0%, #04c7db 100%);
+  --sky-blue: #889bff;
+  --gradient-blue: linear-gradient(to right, #007dfe 0%, #04c7db 100%);
   --default-default: #1e1e1e;
   --default-secondary: #757575;
   --default-tertiary: #b3b3b3;
@@ -107,8 +107,8 @@
 .dark {
   --brand: #4537ff;
   --blue: #1c74f9;
-  --sky-blue: #87b8ff;
-  --gradient-blue: linear-gradient(to right #007dfe 0%, #04c7db 100%);
+  --sky-blue: #889bff;
+  --gradient-blue: linear-gradient(to right, #007dfe 0%, #04c7db 100%);
   --default-default: #1e1e1e;
   --default-secondary: #757575;
   --default-tertiary: #b3b3b3;
@@ -165,4 +165,8 @@ html {
   scroll-behavior: smooth;
 
   font-size: 10px;
+}
+
+body {
+  background: linear-gradient(to bottom, #f4f5f7 0%, #eeeeee 50%, #ffffff 96%);
 }
