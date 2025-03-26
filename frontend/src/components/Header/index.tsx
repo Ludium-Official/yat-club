@@ -35,7 +35,15 @@ const Header: React.FC = () => {
 
     dispatch(setUserInfo(!isEmpty(findUser) ? findUser[0] : null));
 
-    return findUser;
+    return {
+      isSignIn: !isEmpty(findUser),
+      userData: {
+        email: user.userInfo?.email,
+        provider: user.userInfo?.provider,
+        userId: user.userInfo?.userId,
+        walletId: user.walletId,
+      },
+    };
   }, [dispatch]);
 
   const getBalance = useCallback(async () => {
@@ -73,12 +81,12 @@ const Header: React.FC = () => {
     try {
       const user = await callUser();
 
-      if (isEmpty(user)) {
+      if (!user.isSignIn) {
         await fetchData("/register", "POST", {
-          email: user.userInfo?.email,
-          provider: user.userInfo?.provider,
-          userId: user.userInfo?.userId,
-          walletId: user.walletId,
+          email: user.userData?.email,
+          provider: user.userData?.provider,
+          userId: user.userData?.userId,
+          walletId: user.userData.walletId,
         });
       }
 

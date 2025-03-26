@@ -20,7 +20,7 @@ app.use(express.json());
 // Users
 app.post("/user", withAuth, (req, res) => {
   const { userId } = req.body;
-  const query = "SELECT * FROM yatClub.Users WHERE userId = ?";
+  const query = "SELECT * FROM yatclub.Users WHERE userId = ?";
 
   db.query(query, [userId], (err, results) => {
     if (err) {
@@ -34,7 +34,7 @@ app.post("/user", withAuth, (req, res) => {
 app.post("/register", withAuth, (req, res) => {
   const { email, provider, userId, walletId } = req.body;
   const query =
-    "INSERT INTO yatClub.Users (email, provider, userId, walletId) VALUES (?, ?, ?, ?)";
+    "INSERT INTO yatclub.Users (email, provider, userId, walletId) VALUES (?, ?, ?, ?)";
 
   db.query(query, [email, provider, userId, walletId], (err, results) => {
     if (err) {
@@ -48,7 +48,7 @@ app.post("/register", withAuth, (req, res) => {
 // Events
 app.post("/events", withAuth, (req, res) => {
   const { isPast } = req.body;
-  let query = "SELECT * FROM yatClub.Events";
+  let query = "SELECT * FROM yatclub.Events";
 
   if (isPast) {
     query += " WHERE start_at < NOW()";
@@ -67,7 +67,7 @@ app.post("/events", withAuth, (req, res) => {
 
 app.post("/event", withAuth, (req, res) => {
   const { id } = req.body;
-  const query = "SELECT * FROM yatClub.Events WHERE id = ?";
+  const query = "SELECT * FROM yatclub.Events WHERE id = ?";
 
   db.query(query, [id], (err, results) => {
     if (err) {
@@ -82,7 +82,7 @@ app.post("/event", withAuth, (req, res) => {
 app.post("/reservation", withAuth, (req, res) => {
   const { id, userId } = req.body;
   const query =
-    "SELECT * FROM yatClub.Reservations WHERE event_id = ? AND user_id = ?";
+    "SELECT * FROM yatclub.Reservations WHERE event_id = ? AND user_id = ?";
 
   db.query(query, [id, userId], (err, results) => {
     if (err) {
@@ -96,7 +96,7 @@ app.post("/reservation", withAuth, (req, res) => {
 app.post("/booking", withAuth, (req, res) => {
   const { userId, eventId, payMethod } = req.body;
   const query =
-    "INSERT INTO yatClub.Reservations (user_id, event_id, pay_method) VALUES (?, ?, ?)";
+    "INSERT INTO yatclub.Reservations (user_id, event_id, pay_method) VALUES (?, ?, ?)";
 
   db.query(query, [userId, eventId, payMethod], (err, results) => {
     if (err) {
