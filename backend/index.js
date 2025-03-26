@@ -48,13 +48,26 @@ app.post("/register", withAuth, (req, res) => {
 // Events
 app.post("/events", withAuth, (req, res) => {
   const { isPast } = req.body;
-  let query = "SELECT * FROM yatclub.Events";
+  let query = `
+    SELECT 
+        e.*,
+        SUM(CASE WHEN r.status IN ('confirmed', 'completed') THEN 1 ELSE 0 END) AS reservation_count
+    FROM 
+        yatclub.Events e
+    LEFT JOIN 
+        yatclub.Reservations r ON e.id = r.event_id
+  `;
 
   if (isPast) {
-    query += " WHERE start_at < NOW()";
+    query += " WHERE e.start_at < NOW()";
   } else {
-    query += " WHERE start_at >= NOW()";
+    query += " WHERE e.start_at >= NOW()";
   }
+
+  query += `
+    GROUP BY 
+        e.id, e.title
+  `;
 
   query += " order by start_at";
 

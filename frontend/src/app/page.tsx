@@ -7,16 +7,22 @@ import PaginationComp from "@/components/Pagination";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Wrapper from "@/components/Wrapper";
 import fetchData from "@/lib/fetchData";
+import { division } from "@/lib/utils";
 import { EventType } from "@/types/eventType";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+interface EventProps {
+  event: EventType[][];
+  totalEvent: number;
+}
+
 export default function Home() {
   const [isPast, setIsPast] = useState(false);
-  const [events, setEvents] = useState<EventType[]>([]);
-  const [page, setPage] = useState("1");
+  const [events, setEvents] = useState<EventProps>();
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const init = async () => {
@@ -24,7 +30,14 @@ export default function Home() {
         isPast,
       });
 
-      setEvents(events);
+      const totalEvent = events.length;
+      const splitEvents = division(events, 5);
+
+      setEvents({
+        event: splitEvents,
+        totalEvent: totalEvent,
+      });
+      setPage(1);
     };
 
     init();
@@ -78,7 +91,7 @@ export default function Home() {
           </div>
           <div>
             <div className="flex flex-col gap-8 mx-20 mt-24 mb-8">
-              {events.map((event) => (
+              {events?.event[page - 1]?.map((event) => (
                 <Link
                   key={event.id}
                   href={`/event/${event.id}`}
@@ -102,8 +115,7 @@ export default function Home() {
                       <div className="flex items-center gap-8">
                         <ImgComponent imgSrc={UsersIcon.src} />
                         <div className="text-sky-blue">
-                          {/* TODO: event 참여인원 join해서 쿼리 데이터 */}
-                          10/{event.max_participants}
+                          {event.reservation_count}/{event.max_participants}
                         </div>
                       </div>
                     </div>
@@ -111,10 +123,9 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            {/* TODO: pagination 수정 */}
             <PaginationComp
-              currentPage={Number(page)}
-              totalPage={10}
+              totalCount={events?.totalEvent || 0}
+              page={page}
               setPage={setPage}
             />
           </div>

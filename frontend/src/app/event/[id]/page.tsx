@@ -62,40 +62,44 @@ export default function EventDetail() {
 
   return (
     <Wrapper>
-      {event ? (
-        <div>
-          <div className="flex flex-col gap-3">
-            {event.title}
-            <div>{event.description}</div>
-            <ImgComponent imgSrc={event.image_url} width={500} height={500} />
-            <div>Location: {event.location}</div>
-            <div>Total Participants: {event.max_participants}</div>
-            <div>
-              <Button onClick={() => setPayMethod("token")}>Token</Button>
-              <Button onClick={() => setPayMethod("point")}>Point</Button>
+      <div className="mx-20">
+        {event ? (
+          <div>
+            <div className="flex flex-col gap-3">
+              {event.title}
+              <div>{event.description}</div>
+              <ImgComponent imgSrc={event.image_url} width={500} height={500} />
+              <div>Location: {event.location}</div>
+              <div>Total Participants: {event.max_participants}</div>
+              <div>
+                <Button onClick={() => setPayMethod("token")}>Token</Button>
+                <Button onClick={() => setPayMethod("point")}>Point</Button>
+              </div>
+              {payMethod === "token" ? (
+                <>
+                  <div>Price: {event.price}</div>
+                  <div>Token Denom: {event.token_type}</div>
+                </>
+              ) : (
+                <div>Point: {event.point_cost}</div>
+              )}
+              <div>
+                Start Date: {dayjs(event.start_at).format("MMM D YYYY")}
+              </div>
             </div>
-            {payMethod === "token" ? (
-              <>
-                <div>Price: {event.price}</div>
-                <div>Token Denom: {event.token_type}</div>
-              </>
-            ) : (
-              <div>Point: {event.point_cost}</div>
+            {userInfo && !reservation && (
+              <MoonPayWidget
+                price={event.price}
+                token={event.token_type}
+                address={event.receive_address}
+                onPurchaseComplete={booking}
+              />
             )}
-            <div>Start Date: {dayjs(event.start_at).format("MMM D YYYY")}</div>
           </div>
-          {userInfo && !reservation && (
-            <MoonPayWidget
-              price={event.price}
-              token={event.token_type}
-              address={event.receive_address}
-              onPurchaseComplete={booking}
-            />
-          )}
-        </div>
-      ) : (
-        <div>No Event</div>
-      )}
+        ) : (
+          <div>No Event</div>
+        )}
+      </div>
     </Wrapper>
   );
 }

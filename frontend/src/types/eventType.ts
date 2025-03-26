@@ -14,4 +14,5 @@ export interface EventType {
   start_at: string;
   created_at: string;
   updated_at: string;
+  reservation_count?: string;
 }

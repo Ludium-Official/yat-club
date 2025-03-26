@@ -40,10 +40,11 @@ export default function Mypage() {
 
   const logout = async () => {
     try {
+      await logoutSDK();
+
       dispatch(setIsLoggedIn(false));
       dispatch(setUserInfo(null));
 
-      await logoutSDK();
       route.push("/");
     } catch (err) {
       console.error(err);
@@ -52,16 +53,18 @@ export default function Mypage() {
 
   return (
     <Wrapper>
-      {userInfo ? (
-        <div>
-          <div>Email: {userInfo.email}</div>
-          <div>Point: {userInfo.yatPoint}</div>
-          <div>Create Date: {userInfo.created_at}</div>
-        </div>
-      ) : (
-        <div>null</div>
-      )}
-      <Button onClick={logout}>Logout</Button>
+      <div className="mx-20">
+        {userInfo ? (
+          <div>
+            <div>Email: {userInfo.email}</div>
+            <div>Point: {userInfo.yatPoint}</div>
+            <div>Create Date: {userInfo.created_at}</div>
+          </div>
+        ) : (
+          <div>null</div>
+        )}
+        <Button onClick={logout}>Logout</Button>
+      </div>
     </Wrapper>
   );
 }
