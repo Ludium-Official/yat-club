@@ -10,12 +10,14 @@
   --color-brand: var(--brand);
   --color-blue: var(--blue);
   --color-sky-blue: var(--sky-blue);
+  --color-sky-red: var(--sky-red);
   --color-gradient-blue: var(--gradient-blue);
   --color-default-default: var(--default-default);
   --color-default-secondary: var(--default-secondary);
   --color-default-tertiary: var(--default-tertiary);
   --color-gray1: var(--gray1);
   --color-gray2: var(--gray2);
+  --color-gray3: var(--gray3);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -61,6 +63,7 @@
   --brand: #4537ff;
   --blue: #1c74f9;
   --sky-blue: #889bff;
+  --sky-red: #ff7373;
   --gradient-blue: linear-gradient(to right, #007dfe 0%, #04c7db 100%);
   --default-default: #1e1e1e;
   --default-secondary: #757575;
@@ -113,6 +116,7 @@
   --brand: #4537ff;
   --blue: #1c74f9;
   --sky-blue: #889bff;
+  --sky-red: #ff7373;
   --gradient-blue: linear-gradient(to right, #007dfe 0%, #04c7db 100%);
   --default-default: #1e1e1e;
   --default-secondary: #757575;

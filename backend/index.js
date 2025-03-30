@@ -45,7 +45,7 @@ app.post("/register", withAuth, (req, res) => {
   });
 });
 
-app.post("/user/edit", withAuth, (req, res) => {
+app.post("/user/edit/name", withAuth, (req, res) => {
   const { userId, userName } = req.body;
 
   if (!userId || !userName) {
@@ -68,6 +68,33 @@ app.post("/user/edit", withAuth, (req, res) => {
 
     if (results.affectedRows > 0) {
       res.json({ success: true, message: "User name updated successfully." });
+    } else {
+      res.status(404).send("User not found.");
+    }
+  });
+});
+
+app.post("/user/edit/point", withAuth, (req, res) => {
+  const { userId, point } = req.body;
+
+  if (!userId || !point || point <= 0) {
+    return res.status(400).send("Invalid input: check userId and point.");
+  }
+
+  const query = `
+    UPDATE yatclub.Users
+    SET yatPoint = yatPoint - ?
+    WHERE id = ?
+  `;
+
+  db.query(query, [point, userId], (err, results) => {
+    if (err) {
+      console.error("Database query error:", err.message);
+      return res.status(500).send("Database query error");
+    }
+
+    if (results.affectedRows > 0) {
+      res.json({ success: true, message: "User point updated successfully." });
     } else {
       res.status(404).send("User not found.");
     }

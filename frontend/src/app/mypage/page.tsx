@@ -91,7 +91,7 @@ export default function Mypage() {
     e.preventDefault();
 
     try {
-      await fetchData("/user/edit", "POST", {
+      await fetchData("/user/edit/name", "POST", {
         userId: userInfo?.userId,
         userName,
       });

@@ -3,6 +3,16 @@
 import ImgComponent from "@/components/Image";
 import MoonPayWidget from "@/components/MoonPayWidget";
 import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import Wrapper from "@/components/Wrapper";
 import { selectUserInfo } from "@/lib/features/wepin/loginSlice";
 import fetchData from "@/lib/fetchData";
@@ -10,7 +20,7 @@ import { useAppSelector } from "@/lib/hooks";
 import { EventType } from "@/types/eventType";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function EventDetail() {
@@ -22,33 +32,37 @@ export default function EventDetail() {
   const [reservation, setReservation] = useState();
   const [payMethod, setPayMethod] = useState("token");
 
-  useEffect(() => {
-    const init = async () => {
-      const event = await fetchData("/event", "POST", {
-        id,
-      });
+  const callEventDetail = useCallback(async () => {
+    const event = await fetchData("/event", "POST", {
+      id,
+    });
 
-      const reserve = await fetchData("/reservation", "POST", {
-        id,
-        userId: userInfo?.id,
-      });
+    const reserve = await fetchData("/reservation", "POST", {
+      id,
+      userId: userInfo?.id,
+    });
 
-      setEvents(event);
-      setReservation(reserve);
-    };
-
-    init();
-  }, [id, userInfo]);
+    setEvents(event);
+    setReservation(reserve);
+  }, [id, userInfo?.id]);
 
   const booking = async () => {
     try {
       if (userInfo) {
+        if (payMethod === "point") {
+          await fetchData("/user/edit/point", "POST", {
+            userId: userInfo.id,
+            point: event?.point_cost,
+          });
+        }
+
         await fetchData("/booking", "POST", {
           userId: userInfo.id,
           eventId: id,
           payMethod,
         });
 
+        callEventDetail();
         toast("Reservation!");
       }
     } catch (err: unknown) {
@@ -59,6 +73,10 @@ export default function EventDetail() {
       }
     }
   };
+
+  useEffect(() => {
+    callEventDetail();
+  }, [callEventDetail]);
 
   return (
     <Wrapper>
@@ -90,7 +108,39 @@ export default function EventDetail() {
             {userInfo && !reservation && (
               <div>
                 {payMethod === "point" ? (
-                  <Button>Buy Ticket</Button>
+                  <Drawer>
+                    <DrawerTrigger
+                      disabled={event.point_cost > userInfo.yatPoint}
+                    >
+                      Buy Ticket
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <DrawerHeader>
+                        <DrawerTitle>Buy with point</DrawerTitle>
+                        <DrawerDescription>
+                          <div>Your point: {userInfo.yatPoint}</div>
+                          <div>Use point: {event.point_cost}</div>
+                          <div>
+                            Rest point: {userInfo.yatPoint - event.point_cost}
+                          </div>
+                          <div>Really?</div>
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <DrawerFooter className="grid grid-cols-2 gap-8">
+                        <Button
+                          className="bg-sky-blue text-white"
+                          onClick={booking}
+                        >
+                          Buy
+                        </Button>
+                        <DrawerClose>
+                          <Button className="w-full bg-sky-red text-white">
+                            Cancel
+                          </Button>
+                        </DrawerClose>
+                      </DrawerFooter>
+                    </DrawerContent>
+                  </Drawer>
                 ) : (
                   <MoonPayWidget
                     price={event.price}
