@@ -8,4 +8,5 @@ export interface UserType {
   userId: string;
   walletId: string;
   yatPoint: number;
+  name: string;
 }

@@ -14,6 +14,8 @@
   --color-default-default: var(--default-default);
   --color-default-secondary: var(--default-secondary);
   --color-default-tertiary: var(--default-tertiary);
+  --color-gray1: var(--gray1);
+  --color-gray2: var(--gray2);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -63,6 +65,9 @@
   --default-default: #1e1e1e;
   --default-secondary: #757575;
   --default-tertiary: #b3b3b3;
+  --gray1: #767a8c;
+  --gray2: #e2e8f0;
+  --gray3: #e4e4e4;
 
   --background: linear-gradient(
     to bottom,
@@ -112,6 +117,9 @@
   --default-default: #1e1e1e;
   --default-secondary: #757575;
   --default-tertiary: #b3b3b3;
+  --gray1: #767a8c;
+  --gray2: #e2e8f0;
+  --gray3: #e4e4e4;
 
   --background: linear-gradient(
     to bottom,
@@ -169,4 +177,7 @@ html {
 
 body {
   background: linear-gradient(to bottom, #f4f5f7 0%, #eeeeee 50%, #ffffff 96%);
+
+  line-height: normal;
+  font-weight: 300;
 }

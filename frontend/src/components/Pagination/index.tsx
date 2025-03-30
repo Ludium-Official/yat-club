@@ -10,6 +10,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
+import { isEmpty } from "ramda";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface PaginationCompProps {
@@ -34,16 +35,28 @@ const PaginationComp: React.FC<PaginationCompProps> = ({
 
   const rendering = () => {
     const result = [];
+
     for (let i = 1; i <= displayPageCount; i++) {
       result.push(
         <PaginationItem key={i}>
           <PaginationLink
             onClick={() => setPage(i)}
-            className={cn("p-3", i === page ? "bg-white text-black" : "")}
+            className={cn(
+              "p-3",
+              i === page ? "text-black" : "text-default-tertiary"
+            )}
           >
             {i}
           </PaginationLink>
         </PaginationItem>
+      );
+    }
+
+    if (isEmpty(result)) {
+      result.push(
+        <div className="text-black font-normal" key={Math.random()}>
+          1
+        </div>
       );
     }
 
@@ -53,7 +66,7 @@ const PaginationComp: React.FC<PaginationCompProps> = ({
   return (
     <Pagination className="mt-5">
       <PaginationContent className="flex items-center gap-8">
-        {page && totalPage && (
+        {page && (
           <>
             <PaginationItem>
               <PaginationPrevious
@@ -78,7 +91,9 @@ const PaginationComp: React.FC<PaginationCompProps> = ({
             )}
             <PaginationItem>
               <PaginationNext
-                onClick={() => page !== totalPage && setPage(page + 1)}
+                onClick={() =>
+                  totalPage > 0 && page !== totalPage && setPage(page + 1)
+                }
               />
             </PaginationItem>
           </>

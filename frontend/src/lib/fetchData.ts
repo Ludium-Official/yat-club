@@ -5,7 +5,11 @@ const makeUrl = (url: string) => {
   return `${getApiServerHost()}${url}`;
 };
 
-const fetchData = async (url: string, method = "GET", data?: any) => {
+const fetchData = async (
+  url: string,
+  method = "GET",
+  data?: Record<string, unknown>
+) => {
   const callUrl = makeUrl(url);
   const params = method.toLowerCase() === "post" ? undefined : data;
 
@@ -18,7 +22,7 @@ const fetchData = async (url: string, method = "GET", data?: any) => {
       timeout: 5 * 1000,
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.NEXT_PUBLIC_SECRET_KEY,
+        "x-api-key": btoa(process.env.NEXT_PUBLIC_SECRET_KEY || ""),
       },
     });
 

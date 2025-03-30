@@ -45,6 +45,35 @@ app.post("/register", withAuth, (req, res) => {
   });
 });
 
+app.post("/user/edit", withAuth, (req, res) => {
+  const { userId, userName } = req.body;
+
+  if (!userId || !userName) {
+    return res
+      .status(400)
+      .send("Invalid input: userId and userName are required.");
+  }
+
+  const query = `
+    UPDATE yatclub.Users
+    SET name = ?
+    WHERE userId = ?
+  `;
+
+  db.query(query, [userName, userId], (err, results) => {
+    if (err) {
+      console.error("Database query error:", err.message);
+      return res.status(500).send("Database query error");
+    }
+
+    if (results.affectedRows > 0) {
+      res.json({ success: true, message: "User name updated successfully." });
+    } else {
+      res.status(404).send("User not found.");
+    }
+  });
+});
+
 // Events
 app.post("/events", withAuth, (req, res) => {
   const { isPast } = req.body;
@@ -72,6 +101,40 @@ app.post("/events", withAuth, (req, res) => {
   query += " order by start_at";
 
   db.query(query, (err, results) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Database query error");
+    }
+    res.json(results);
+  });
+});
+
+app.post("/user-events", withAuth, (req, res) => {
+  const { isPast, userId } = req.body;
+  let query = `
+    SELECT 
+        e.*,
+        SUM(CASE WHEN r.status IN ('confirmed', 'completed') THEN 1 ELSE 0 END) AS reservation_count
+    FROM 
+        yatclub.Events e
+    LEFT JOIN 
+        yatclub.Reservations r ON e.id = r.event_id
+  `;
+
+  if (isPast) {
+    query += " WHERE e.start_at < NOW() AND r.user_id = ?";
+  } else {
+    query += " WHERE e.start_at >= NOW() AND r.user_id = ?";
+  }
+
+  query += `
+    GROUP BY 
+        e.id, e.title
+  `;
+
+  query += " ORDER BY e.start_at";
+
+  db.query(query, [userId], (err, results) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send("Database query error");

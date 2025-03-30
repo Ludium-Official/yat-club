@@ -88,12 +88,18 @@ export default function EventDetail() {
               </div>
             </div>
             {userInfo && !reservation && (
-              <MoonPayWidget
-                price={event.price}
-                token={event.token_type}
-                address={event.receive_address}
-                onPurchaseComplete={booking}
-              />
+              <div>
+                {payMethod === "point" ? (
+                  <Button>Buy Ticket</Button>
+                ) : (
+                  <MoonPayWidget
+                    price={event.price}
+                    token={event.token_type}
+                    address={event.receive_address}
+                    onPurchaseComplete={booking}
+                  />
+                )}
+              </div>
             )}
           </div>
         ) : (

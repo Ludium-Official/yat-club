@@ -1,6 +1,8 @@
 "use client";
 
 import HeaderLogo from "@/assets/Header/HeaderLogo.svg";
+import OpHeaderLogo from "@/assets/Header/OpHeaderLogo.svg";
+import ProfileLogo from "@/assets/Header/ProfileLogo.svg";
 import ImgComponent from "@/components/Image";
 import { Button } from "@/components/ui/button";
 import { setBalances } from "@/lib/features/wepin/balanceSlice";
@@ -80,7 +82,6 @@ const Header: React.FC = () => {
 
     try {
       const user = await callUser();
-      console.log(user);
 
       if (!user.isSignIn) {
         await fetchData("/register", "POST", {
@@ -105,14 +106,11 @@ const Header: React.FC = () => {
   return (
     <div className="flex items-center justify-between px-20 py-10">
       <Link href="/">
-        <ImgComponent imgSrc={HeaderLogo.src} />
+        <ImgComponent imgSrc={isLoggedIn ? OpHeaderLogo.src : HeaderLogo.src} />
       </Link>
       {isLoggedIn ? (
-        <Link
-          className="bg-transparent border border-sky-blue rounded-[0.8rem] px-12 py-6 text-sky-blue"
-          href="/mypage"
-        >
-          Mypage
+        <Link className="rounded-full w-30 h-30" href="/mypage">
+          <ImgComponent imgSrc={ProfileLogo.src} />
         </Link>
       ) : (
         <Button

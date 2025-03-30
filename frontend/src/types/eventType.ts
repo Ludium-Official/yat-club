@@ -1,3 +1,8 @@
+export interface ParseEventType {
+  event: EventType[][];
+  totalEvent: number;
+}
+
 export interface EventType {
   id: number;
   owner_id: number;

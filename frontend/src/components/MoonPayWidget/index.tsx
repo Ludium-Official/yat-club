@@ -31,7 +31,7 @@ const BuyCryptoWidget: React.FC<IBuyCryptoWidgetProps> = ({
 
   return (
     <div>
-      <button onClick={() => setIsVisible(true)}>Buy Crypto</button>
+      <button onClick={() => setIsVisible(true)}>Buy Ticket</button>
       <MoonPayBuyWidget
         variant="overlay"
         baseCurrencyAmount={totalAmount}
