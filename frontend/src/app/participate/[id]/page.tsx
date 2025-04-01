@@ -1,9 +1,9 @@
 "use client";
 
 import Wrapper from "@/components/Wrapper";
-import { QrReader } from "@blackbox-vision/react-qr-reader";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { QrReader } from "react-qr-reader";
 
 export default function ParticipateDetail() {
   const { id } = useParams();
@@ -36,8 +36,12 @@ export default function ParticipateDetail() {
         <QrReader
           constraints={{ facingMode: "environment" }}
           onResult={(result, error) => {
-            if (result) handleScan(result);
-            if (error) handleError(error);
+            if (result) {
+              handleScan(result);
+            }
+            if (error) {
+              handleError(error);
+            }
           }}
         />
         {scannedData === null ? (
