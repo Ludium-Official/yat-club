@@ -8,9 +8,10 @@
   --spacing: 0.1rem;
 
   --color-brand: var(--brand);
-  --color-white: var(--white);
   --color-blue: var(--blue);
   --color-sky-blue: var(--sky-blue);
+  --color-mid-blue: var(--mid-blue);
+  --color-mid-blue2: var(--mid-blue2);
   --color-light-blue: var(--light-blue);
   --color-sky-red: var(--sky-red);
   --color-gradient-blue: var(--gradient-blue);
@@ -20,7 +21,6 @@
   --color-gray1: var(--gray1);
   --color-gray2: var(--gray2);
   --color-gray3: var(--gray3);
-  --color-gray4: var(--gray4);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -64,19 +64,19 @@
 
 :root {
   --brand: #4537ff;
-  --white: #ffffff;
   --blue: #1c74f9;
   --sky-blue: #889bff;
+  --mid-blue: #e5f1ff;
+  --mid-blue2: #d7e7ff;
   --light-blue: #f2f8ff;
   --sky-red: #ff7373;
   --gradient-blue: linear-gradient(to right, #007dfe 0%, #04c7db 100%);
   --default-default: #1e1e1e;
   --default-secondary: #757575;
   --default-tertiary: #b3b3b3;
-  --gray1: #475569;
-  --gray2: #767a8c;
-  --gray3: #e2e8f0;
-  --gray4: #e4e4e4;
+  --gray1: #767a8c;
+  --gray2: #e2e8f0;
+  --gray3: #e4e4e4;
 
   --background: linear-gradient(
     to bottom,
@@ -120,19 +120,19 @@
 
 .dark {
   --brand: #4537ff;
-  --white: #ffffff;
   --blue: #1c74f9;
   --sky-blue: #889bff;
+  --mid-blue: #e5f1ff;
+  --mid-blue2: #d7e7ff;
   --light-blue: #f2f8ff;
   --sky-red: #ff7373;
   --gradient-blue: linear-gradient(to right, #007dfe 0%, #04c7db 100%);
   --default-default: #1e1e1e;
   --default-secondary: #757575;
   --default-tertiary: #b3b3b3;
-  --gray1: #475569;
-  --gray2: #767a8c;
-  --gray3: #e2e8f0;
-  --gray4: #e4e4e4;
+  --gray1: #767a8c;
+  --gray2: #e2e8f0;
+  --gray3: #e4e4e4;
 
   --background: linear-gradient(
     to bottom,

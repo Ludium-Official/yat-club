@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { setBalances } from "@/lib/features/wepin/balanceSlice";
 import {
   selectIsLoggedIn,
+  selectUserInfo,
   setIsLoggedIn,
   setUserInfo,
 } from "@/lib/features/wepin/loginSlice";
@@ -26,6 +27,7 @@ import { useCallback, useEffect, useState } from "react";
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
 
+  const userInfo = useAppSelector(selectUserInfo);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -108,19 +110,29 @@ const Header: React.FC = () => {
       <Link href="/">
         <ImgComponent imgSrc={isLoggedIn ? OpHeaderLogo.src : HeaderLogo.src} />
       </Link>
-      {isLoggedIn ? (
-        <Link className="rounded-full w-30 h-30" href="/mypage">
-          <ImgComponent imgSrc={ProfileLogo.src} />
-        </Link>
-      ) : (
-        <Button
-          onClick={buttonOnClick}
-          className="bg-transparent border border-sky-blue text-sky-blue"
-          disabled={isLoggingIn && !isLoggedIn}
-        >
-          {buttonText}
-        </Button>
-      )}
+      <div className="flex items-center gap-20">
+        {userInfo?.auth === "ADMIN" && (
+          <Link
+            href="/create"
+            className="bg-mid-blue px-10 py-8 rounded-[1rem] text-blue text-[1rem] border border-mid-blue2"
+          >
+            Create event
+          </Link>
+        )}
+        {isLoggedIn ? (
+          <Link className="rounded-full w-30 h-30" href="/mypage">
+            <ImgComponent imgSrc={ProfileLogo.src} />
+          </Link>
+        ) : (
+          <Button
+            onClick={buttonOnClick}
+            className="bg-transparent border border-sky-blue text-sky-blue"
+            disabled={isLoggingIn && !isLoggedIn}
+          >
+            {buttonText}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

@@ -2,6 +2,7 @@
 
 import CalendarIcon from "@/assets/EventCreate/CalendarIcon.svg";
 import EditIcon from "@/assets/EventCreate/EditIcon.svg";
+import LocationIcon from "@/assets/EventCreate/LocationIcon.svg";
 import LockIcon from "@/assets/EventCreate/LockIcon.svg";
 import PlusIcon from "@/assets/EventCreate/PlusIcon.svg";
 import UploadImgIcon from "@/assets/EventCreate/UploadImgIcon.svg";
@@ -35,14 +36,20 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import Wrapper from "@/components/Wrapper";
+import { selectUserInfo } from "@/lib/features/wepin/loginSlice";
+import fetchData from "@/lib/fetchData";
+import { useAppSelector } from "@/lib/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 export default function CreateEvent() {
+  const userInfo = useAppSelector(selectUserInfo);
+
   const [previewImg, setPreviewImg] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isGuestsEditing, setIsGuestsEditing] = useState(false);
@@ -80,7 +87,7 @@ export default function CreateEvent() {
     },
   });
 
-  const onSubmit = (data: {
+  const onSubmit = async (data: {
     image: FileList;
     title: string;
     date: Date;
@@ -91,17 +98,51 @@ export default function CreateEvent() {
     target: string;
     guests: string;
   }) => {
-    const file = data.image[0];
+    try {
+      if (!userInfo) {
+        toast.error("Use this feature after login.");
+        return;
+      } else if (userInfo.auth !== "ADMIN") {
+        toast.error("Only admin feature.");
+        return;
+      }
 
-    console.log("Uploaded file:", file);
-    console.log("Date:", data.date);
-    console.log("Title:", data.title);
-    console.log("Description:", data.description);
-    console.log("Location:", data.location);
-    console.log("Private:", data.private);
-    console.log("Price:", Number(data.price));
-    console.log("Target:", data.target);
-    console.log("Guests:", Number(data.guests));
+      const file = data.image[0];
+      const maxFileSize = 5 * 1024 * 1024;
+      const formData = new FormData();
+
+      if (file.size > maxFileSize) {
+        toast.error("File size exceeds the limit of 5MB.");
+        return;
+      }
+
+      formData.append("file", file);
+
+      const response = await fetchData(
+        "/upload-img-in-bucket",
+        "POST",
+        formData,
+        true
+      );
+
+      await fetchData("/event/create", "POST", {
+        userId: userInfo.id,
+        title: data.title,
+        description: data.description,
+        image_url: response.url,
+        is_private: data.private,
+        max_participants: Number(data.guests),
+        receive_address: userInfo.walletId,
+        start_at: dayjs(data.date).format("YYYY-MM-DD HH:mm:ss"),
+        location: data.location,
+        price: Number(data.price),
+        target: data.target,
+      });
+
+      toast.success("Success!");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -110,6 +151,8 @@ export default function CreateEvent() {
         <div className="my-10 text-[2rem]">Create Event</div>
         <Form {...form}>
           <form
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col"
           >
@@ -122,7 +165,7 @@ export default function CreateEvent() {
                     {previewImg ? (
                       <ImgComponent
                         imgSrc={previewImg}
-                        className="aspect-square w-full rounded-[2rem]"
+                        className="aspect-square w-full! rounded-[2rem]"
                       />
                     ) : (
                       <div
@@ -170,7 +213,7 @@ export default function CreateEvent() {
                   <FormControl>
                     <Input
                       placeholder="Event title"
-                      className="text-[1.8rem]"
+                      className="text-[1.6rem]"
                       {...field}
                     />
                   </FormControl>
@@ -339,15 +382,18 @@ export default function CreateEvent() {
 
             <FormField
               control={form.control}
-              name="description"
+              name="location"
               render={({ field }) => (
-                <FormItem className="mt-12">
-                  <Label className="mb-10 text-gray1 text-[1.2rem]">
-                    <ImgComponent imgSrc={EditIcon} className="ml-10 mr-8" />
-                    Description
-                  </Label>
+                <FormItem className="mt-20">
                   <FormControl>
-                    <Textarea placeholder="Type your description" {...field} />
+                    <div className="flex items-center bg-light-blue w-full min-h-42 justify-start px-10 py-11 rounded-xl text-[1.2rem]">
+                      <ImgComponent imgSrc={LocationIcon} className="mr-8" />
+                      <Input
+                        className="bg-transparent p-0 border-none shadow-none text-[1.2rem] font-normal rounded-none"
+                        placeholder="Location"
+                        {...field}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -356,14 +402,18 @@ export default function CreateEvent() {
 
             <FormField
               control={form.control}
-              name="location"
+              name="description"
               render={({ field }) => (
                 <FormItem className="mt-12">
+                  <Label className="mb-10 text-gray1 text-[1.2rem]">
+                    <ImgComponent imgSrc={EditIcon} className="ml-10 mr-8" />
+                    Description
+                  </Label>
                   <FormControl>
-                    <Input
-                      placeholder="Event location"
-                      className="text-[1.2rem]"
+                    <Textarea
+                      placeholder="Type your description"
                       {...field}
+                      className="h-80 text-[1.2rem]"
                     />
                   </FormControl>
                   <FormMessage />
@@ -426,9 +476,12 @@ export default function CreateEvent() {
                           value={field.value}
                         >
                           <SelectTrigger className="w-110">
-                            <SelectValue placeholder="Target" />
+                            <SelectValue
+                              placeholder="Target"
+                              className="text-[1.4rem]"
+                            />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="text-[1.4rem]">
                             <SelectItem value="eth">USD</SelectItem>
                             <SelectItem value="point">Point</SelectItem>
                           </SelectContent>

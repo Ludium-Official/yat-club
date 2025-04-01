@@ -74,37 +74,39 @@ const EventList: React.FC<IEventListProps> = ({
       </div>
       <div>
         <div className="flex flex-col gap-8 mx-20 mt-24 mb-8">
-          {events?.event[page - 1]?.map((event) => (
-            <Link
-              key={event.id}
-              href={`/event/${event.id}`}
-              className="flex items-center gap-16 p-12 rounded-[2rem] border border-gray3 bg-white"
-            >
-              <div
-                style={{
-                  backgroundImage: `url(${event.image_url})`,
-                }}
-                className="w-80 h-80 bg-no-repeat bg-cover bg-center rounded-xl"
-              />
-              <div>
-                <div className="font-bold text-[1.8rem]">{event.title}</div>
-                <div className="flex flex-col gap-6 mt-14 text-[1.2rem]">
-                  <div className="flex items-center gap-8">
-                    <ImgComponent imgSrc={CalendarIcon.src} />
-                    <div>
-                      {dayjs(event.start_at).format("MMM D YYYY HH:mm")}
+          {events?.event[page - 1]?.map((event) => {
+            return (
+              <Link
+                key={event.id}
+                href={`/event/${event.id}`}
+                className="flex items-center gap-16 p-12 rounded-[2rem] border border-gray3 bg-white"
+              >
+                <div
+                  style={{
+                    backgroundImage: `url(${event.image_url})`,
+                  }}
+                  className="w-80 h-80 bg-no-repeat bg-cover bg-center rounded-xl"
+                />
+                <div>
+                  <div className="font-bold text-[1.8rem]">{event.title}</div>
+                  <div className="flex flex-col gap-6 mt-14 text-[1.2rem]">
+                    <div className="flex items-center gap-8">
+                      <ImgComponent imgSrc={CalendarIcon.src} />
+                      <div>
+                        {dayjs(event.start_at).format("MMM D YYYY HH:mm")}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-8">
-                    <ImgComponent imgSrc={UsersIcon.src} />
-                    <div className="text-sky-blue">
-                      {event.reservation_count} / {event.max_participants}
+                    <div className="flex items-center gap-8">
+                      <ImgComponent imgSrc={UsersIcon.src} />
+                      <div className="text-sky-blue">
+                        {event.reservation_count} / {event.max_participants}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
         <PaginationComp
           totalCount={events?.totalEvent || 0}

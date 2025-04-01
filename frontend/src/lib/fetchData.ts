@@ -8,7 +8,8 @@ const makeUrl = (url: string) => {
 const fetchData = async (
   url: string,
   method = "GET",
-  data?: Record<string, unknown>
+  data?: Record<string, unknown> | FormData,
+  isFormData = false
 ) => {
   const callUrl = makeUrl(url);
   const params = method.toLowerCase() === "post" ? undefined : data;
@@ -21,7 +22,7 @@ const fetchData = async (
       params,
       timeout: 5 * 1000,
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": isFormData ? "multipart/form-data" : "application/json",
         "x-api-key": btoa(process.env.NEXT_PUBLIC_SECRET_KEY || ""),
       },
     });

@@ -1,9 +1,22 @@
 require("dotenv").config();
 
+const { v4: uuidv4 } = require("uuid");
+const multer = require("multer");
 const express = require("express");
 const cors = require("cors");
 const db = require("./db");
 const { withAuth } = require("./middleware/auth");
+const { Storage } = require("@google-cloud/storage");
+
+const storage = new Storage({
+  projectId: process.env.BUCKET_PROJECT_ID,
+  keyFilename: "./config/yat-club-b2996cf03eeb.json",
+});
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 const app = express();
 const PORT = 8080;
@@ -11,6 +24,8 @@ const PORT = 8080;
 const corsOptions = {
   origin: "*",
   optionsSuccessStatus: 200,
+  method: ["PUT", "POST", "GET"],
+  maxAgeSeconds: 3600,
 };
 
 app.use(cors(corsOptions));
@@ -183,6 +198,60 @@ app.post("/event", withAuth, (req, res) => {
   });
 });
 
+app.post("/event/create", withAuth, (req, res) => {
+  const {
+    userId,
+    title,
+    description,
+    image_url,
+    is_private,
+    max_participants,
+    receive_address,
+    start_at,
+    location,
+    price,
+    target,
+  } = req.body;
+
+  const query = `
+    INSERT INTO yatclub.Events
+      (owner_id, title, description, image_url, is_private, max_participants, receive_address, start_at, location, point_cost, price, token_type)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 
+      CASE WHEN ? = 'point' THEN ? ELSE NULL END, 
+      CASE WHEN ? != 'point' THEN ? ELSE NULL END, 
+      CASE WHEN ? != 'point' THEN ? ELSE NULL END
+    )
+  `;
+
+  db.query(
+    query,
+    [
+      userId,
+      title,
+      description,
+      image_url,
+      is_private,
+      max_participants,
+      receive_address,
+      start_at,
+      location,
+      target,
+      price,
+      target,
+      price,
+      target,
+      target,
+    ],
+    (err, results) => {
+      if (err) {
+        console.error(err.message);
+        return res.status(500).send("Database query error");
+      }
+      res.json({ success: true, eventId: results.insertId });
+    }
+  );
+});
+
 // Reservations
 app.post("/reservation", withAuth, (req, res) => {
   const { id, userId } = req.body;
@@ -211,6 +280,47 @@ app.post("/booking", withAuth, (req, res) => {
     res.json(results);
   });
 });
+
+// GCS bucket
+app.post(
+  "/upload-img-in-bucket",
+  withAuth,
+  upload.single("file"),
+  async (req, res) => {
+    try {
+      const bucket = storage.bucket("yat-club");
+      const file = req.file;
+
+      if (!file) {
+        console.error("No file uploaded.");
+        return res.status(400).send("No file uploaded.");
+      }
+
+      const imgName = `events/${uuidv4()}`;
+
+      const blob = bucket.file(imgName);
+      const blobStream = blob.createWriteStream({
+        resumable: false,
+        contentType: file.mimetype,
+      });
+
+      blobStream.on("error", (err) => {
+        console.error("Upload error:", err);
+        res.status(500).send("Failed to upload file.");
+      });
+
+      blobStream.on("finish", () => {
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+        res.status(200).send({ url: publicUrl });
+      });
+
+      blobStream.end(file.buffer);
+    } catch (err) {
+      console.error("Error uploading file:", err);
+      res.status(500).send("Internal server error.");
+    }
+  }
+);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
