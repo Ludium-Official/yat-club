@@ -27,6 +27,7 @@ import { useAppSelector } from "@/lib/hooks";
 import { commaNumber } from "@/lib/utils";
 import { EventType } from "@/types/eventType";
 import dayjs from "dayjs";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -92,11 +93,19 @@ export default function EventDetail() {
       <div className="mx-20 mt-20">
         <div className="flex items-center justify-between my-10 text-[2rem] font-normal">
           Event Detail
-          {event?.owner_id === userInfo?.id && (
-            <div>
-              <ImgComponent imgSrc={EditIcon} />
-            </div>
-          )}
+          <div className="flex items-center gap-10">
+            <Link
+              href={`/participate/${id}`}
+              className="text-[1.2rem] font-medium"
+            >
+              All Guest
+            </Link>
+            {event?.owner_id === userInfo?.id && (
+              <div>
+                <ImgComponent imgSrc={EditIcon} />
+              </div>
+            )}
+          </div>
         </div>
         {event ? (
           <div className="flex flex-col gap-20">

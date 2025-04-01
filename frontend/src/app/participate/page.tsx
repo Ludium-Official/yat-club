@@ -4,7 +4,8 @@ import QrcodeIcon from "@/assets/common/QrcodeIcon.svg";
 import CalendarIcon from "@/assets/EventDetail/CalendarIcon.svg";
 import LockIcon from "@/assets/EventDetail/LockIcon.svg";
 import ProfileLogo from "@/assets/Header/ProfileLogo.svg";
-import RightCheckIcon from "@/assets/Participate/RightCheckIcon.svg";
+import CorrectIcon from "@/assets/Participate/CorrectIcon.svg";
+import IncorrectIcon from "@/assets/Participate/IncorrectIcon.svg";
 import ImgComponent from "@/components/Image";
 import {
   Dialog,
@@ -21,9 +22,9 @@ import { useAppSelector } from "@/lib/hooks";
 import { ReservationType } from "@/types/reservationType";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { QrCode } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import QRCode from "react-qr-code";
 
 export default function EventDetail() {
   const userInfo = useAppSelector(selectUserInfo);
@@ -82,9 +83,11 @@ export default function EventDetail() {
                             <div className="text-[#5299FF]">
                               {reservation.event_title}
                             </div>
-                            <QrCode
+                            <QRCode
                               className="w-200 h-200 my-20"
-                              values={String(reservation.reservation_id)}
+                              value={`${String(reservation.reservation_id)}-${
+                                userInfo?.userId
+                              }`}
                             />
                           </DialogTitle>
                           <DialogDescription className="pt-20 border-t border-dashed">
@@ -116,8 +119,8 @@ export default function EventDetail() {
                       <ImgComponent
                         imgSrc={
                           reservation.reservation_status === "completed"
-                            ? RightCheckIcon
-                            : RightCheckIcon
+                            ? CorrectIcon
+                            : IncorrectIcon
                         }
                       />
                       {status()}
@@ -125,7 +128,7 @@ export default function EventDetail() {
                   )}
                 </div>
                 <Link
-                  href={`/participate/${reservation.event_id}`}
+                  href={`/event/${reservation.event_id}`}
                   className="text-[1.6rem] font-medium"
                 >
                   {reservation.event_title}

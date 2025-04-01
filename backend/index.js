@@ -327,6 +327,35 @@ app.post("/booking", withAuth, (req, res) => {
   });
 });
 
+app.post("/own/reservation", withAuth, (req, res) => {
+  const { eventId } = req.body;
+
+  const query = `
+    SELECT
+      r.id AS reservation_id,
+      r.status AS reservation_status,
+      u.id AS user_id,
+      u.name AS user_name,
+      u.email AS user_email
+    FROM 
+      yatclub.Reservations r
+    INNER JOIN 
+      yatclub.Users u ON r.user_id = u.id
+    WHERE 
+      r.event_id = ?
+    ORDER BY 
+      r.status DESC
+  `;
+
+  db.query(query, [eventId], (err, results) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Database query error");
+    }
+    res.json(results);
+  });
+});
+
 // GCS bucket
 app.post(
   "/upload-img-in-bucket",

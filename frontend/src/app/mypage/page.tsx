@@ -180,7 +180,7 @@ export default function Mypage() {
             </div>
             <div>
               <div className="flex items-center justify-between mx-20 mt-20 mb-10 text-[2rem] font-normal">
-                My events list
+                Participate list
                 <Link
                   href="/participate"
                   className="bg-mid-blue p-8 rounded-xl text-[1.2rem] text-blue"

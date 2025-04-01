@@ -8,3 +8,11 @@ export interface ReservationType {
   reservation_id: number;
   reservation_status: "confirmed" | "rejected" | "completed";
 }
+
+export interface ReservationForUserType {
+  reservation_id: number;
+  reservation_status: "confirmed" | "rejected" | "completed";
+  user_email: string;
+  user_id: number;
+  user_name: string;
+}
