@@ -187,7 +187,19 @@ app.post("/user-events", withAuth, (req, res) => {
 
 app.post("/event", withAuth, (req, res) => {
   const { id } = req.body;
-  const query = "SELECT * FROM yatclub.Events WHERE id = ?";
+  const query = `
+    SELECT
+      e.*,
+      SUM(CASE WHEN r.status IN ('confirmed', 'completed') THEN 1 ELSE 0 END) AS reservation_count
+    FROM
+      yatclub.Events e
+    LEFT JOIN
+      yatclub.Reservations r
+    ON
+      e.id = r.event_id
+    WHERE
+      e.id = ?
+  `;
 
   db.query(query, [id], (err, results) => {
     if (err) {
@@ -253,6 +265,40 @@ app.post("/event/create", withAuth, (req, res) => {
 });
 
 // Reservations
+app.post("/reservations", withAuth, (req, res) => {
+  const { userId } = req.body;
+
+  const query = `
+    SELECT
+      r.id AS reservation_id,
+      r.event_id,
+      r.status AS reservation_status,
+      e.title AS event_title,
+      e.image_url AS event_image_url,
+      e.start_at AS event_start_at,
+      e.location AS event_location,
+      e.is_private AS event_is_private
+    FROM 
+      yatclub.Reservations r
+    INNER JOIN 
+      yatclub.Events e
+    ON 
+      r.event_id = e.id
+    WHERE 
+      r.user_id = ?
+    ORDER BY 
+      e.start_at DESC
+  `;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Database query error");
+    }
+    res.json(results);
+  });
+});
+
 app.post("/reservation", withAuth, (req, res) => {
   const { id, userId } = req.body;
   const query =
