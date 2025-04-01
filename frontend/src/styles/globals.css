@@ -13,6 +13,7 @@
   --color-mid-blue: var(--mid-blue);
   --color-mid-blue2: var(--mid-blue2);
   --color-light-blue: var(--light-blue);
+  --color-red: var(--red);
   --color-sky-red: var(--sky-red);
   --color-gradient-blue: var(--gradient-blue);
   --color-default-default: var(--default-default);
@@ -21,6 +22,7 @@
   --color-gray1: var(--gray1);
   --color-gray2: var(--gray2);
   --color-gray3: var(--gray3);
+  --color-gray4: var(--gray4);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -69,7 +71,8 @@
   --mid-blue: #e5f1ff;
   --mid-blue2: #d7e7ff;
   --light-blue: #f2f8ff;
-  --sky-red: #ff7373;
+  --red: #f9391c;
+  --sky-red: #ff968870;
   --gradient-blue: linear-gradient(to right, #007dfe 0%, #04c7db 100%);
   --default-default: #1e1e1e;
   --default-secondary: #757575;
@@ -77,6 +80,7 @@
   --gray1: #767a8c;
   --gray2: #e2e8f0;
   --gray3: #e4e4e4;
+  --gray4: #f3f3f3;
 
   --background: linear-gradient(
     to bottom,
@@ -125,7 +129,8 @@
   --mid-blue: #e5f1ff;
   --mid-blue2: #d7e7ff;
   --light-blue: #f2f8ff;
-  --sky-red: #ff7373;
+  --red: #f9391c;
+  --sky-red: #ff968870;
   --gradient-blue: linear-gradient(to right, #007dfe 0%, #04c7db 100%);
   --default-default: #1e1e1e;
   --default-secondary: #757575;
@@ -133,6 +138,7 @@
   --gray1: #767a8c;
   --gray2: #e2e8f0;
   --gray3: #e4e4e4;
+  --gray4: #f3f3f3;
 
   --background: linear-gradient(
     to bottom,

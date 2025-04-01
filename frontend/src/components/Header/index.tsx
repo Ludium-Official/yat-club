@@ -22,14 +22,13 @@ import fetchData from "@/lib/fetchData";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import Link from "next/link";
 import { isEmpty } from "ramda";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const userInfo = useAppSelector(selectUserInfo);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const callUser = useCallback(async () => {
     const user = await userLoginSDK();
@@ -65,13 +64,10 @@ const Header: React.FC = () => {
 
       if (wepinStatus === "login") {
         try {
-          setIsLoggingIn(true);
           await callUser();
           await getBalance();
         } catch (err) {
           console.error(err);
-        } finally {
-          setIsLoggingIn(false);
         }
       }
     };
@@ -80,8 +76,6 @@ const Header: React.FC = () => {
   }, [callUser, dispatch, getBalance, isLoggedIn]);
 
   const login = async () => {
-    setIsLoggingIn(true);
-
     try {
       const user = await callUser();
 
@@ -97,13 +91,8 @@ const Header: React.FC = () => {
       await getBalance();
     } catch (err) {
       console.error(err);
-    } finally {
-      setIsLoggingIn(false);
     }
   };
-
-  const buttonText = isLoggingIn ? "Ing..." : "Login";
-  const buttonOnClick = isLoggingIn ? undefined : login;
 
   return (
     <div className="flex items-center justify-between px-20 py-10">
@@ -125,11 +114,10 @@ const Header: React.FC = () => {
           </Link>
         ) : (
           <Button
-            onClick={buttonOnClick}
+            onClick={login}
             className="bg-transparent border border-sky-blue text-sky-blue"
-            disabled={isLoggingIn && !isLoggedIn}
           >
-            {buttonText}
+            Login
           </Button>
         )}
       </div>

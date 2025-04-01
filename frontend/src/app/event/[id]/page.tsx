@@ -1,5 +1,12 @@
 "use client";
 
+import EditIcon from "@/assets/common/EditIcon.svg";
+import ArrowIcon from "@/assets/EventDetail/ArrowIcon.svg";
+import CalendarIcon from "@/assets/EventDetail/CalendarIcon.svg";
+import DollarIcon from "@/assets/EventDetail/DollarIcon.svg";
+import FileIcon from "@/assets/EventDetail/FileIcon.svg";
+import LockIcon from "@/assets/EventDetail/LockIcon.svg";
+import UsersIcon from "@/assets/EventDetail/UsersIcon.svg";
 import ImgComponent from "@/components/Image";
 import MoonPayWidget from "@/components/MoonPayWidget";
 import { Button } from "@/components/ui/button";
@@ -17,6 +24,7 @@ import Wrapper from "@/components/Wrapper";
 import { selectUserInfo } from "@/lib/features/wepin/loginSlice";
 import fetchData from "@/lib/fetchData";
 import { useAppSelector } from "@/lib/hooks";
+import { commaNumber } from "@/lib/utils";
 import { EventType } from "@/types/eventType";
 import dayjs from "dayjs";
 import { useParams } from "next/navigation";
@@ -30,7 +38,6 @@ export default function EventDetail() {
 
   const [event, setEvents] = useState<EventType>();
   const [reservation, setReservation] = useState();
-  const [payMethod, setPayMethod] = useState("token");
 
   const callEventDetail = useCallback(async () => {
     const event = await fetchData("/event", "POST", {
@@ -48,11 +55,13 @@ export default function EventDetail() {
 
   const booking = async () => {
     try {
-      if (userInfo) {
-        if (payMethod === "point") {
+      if (userInfo && event) {
+        const payMethod = event.point_cost ? "point" : "token";
+
+        if (event.point_cost) {
           await fetchData("/user/edit/point", "POST", {
             userId: userInfo.id,
-            point: event?.point_cost,
+            point: event.point_cost,
           });
         }
 
@@ -80,39 +89,124 @@ export default function EventDetail() {
 
   return (
     <Wrapper>
-      <div className="mx-20">
+      <div className="mx-20 mt-20">
+        <div className="flex items-center justify-between my-10 text-[2rem] font-normal">
+          Event Detail
+          {event?.owner_id === userInfo?.id && (
+            <div>
+              <ImgComponent imgSrc={EditIcon} />
+            </div>
+          )}
+        </div>
         {event ? (
-          <div>
-            <div className="flex flex-col gap-3">
-              {event.title}
-              <div>{event.description}</div>
-              <ImgComponent imgSrc={event.image_url} width={500} height={500} />
-              <div>Location: {event.location}</div>
-              <div>Total Participants: {event.max_participants}</div>
-              <div>
-                <Button onClick={() => setPayMethod("token")}>Token</Button>
-                <Button onClick={() => setPayMethod("point")}>Point</Button>
+          <div className="flex flex-col gap-20">
+            <ImgComponent
+              imgSrc={event.image_url}
+              width={500}
+              height={500}
+              className="rounded-[2rem] mt-20"
+            />
+            <div className="flex flex-col items-center">
+              <div className="text-center mb-20 text-[3.2rem] font-normal">
+                {event.title}
               </div>
-              {payMethod === "token" ? (
-                <>
-                  <div>Price: {event.price}</div>
-                  <div>Token Denom: {event.token_type}</div>
-                </>
-              ) : (
-                <div>Point: {event.point_cost}</div>
-              )}
-              <div>
-                Start Date: {dayjs(event.start_at).format("MMM D YYYY")}
+              <div
+                style={{
+                  background:
+                    "linear-gradient(to right bottom, #ffffff 0%, #f0f7ff 100%)",
+                }}
+                className="flex flex-col gap-17 w-full p-20 border rounded-xl border-gray4"
+              >
+                <div className="flex items-center">
+                  <ImgComponent
+                    imgSrc={CalendarIcon}
+                    className="mr-8 p-6 border border-#EFF3F6 rounded-lg"
+                  />
+                  <div className="text-[1.4rem] font-normal">
+                    {dayjs(event.start_at).format("MMM, D, YYYY (HH:mm)")}
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center">
+                    <ImgComponent
+                      imgSrc={FileIcon}
+                      className="mr-8 p-6 border border-#EFF3F6 rounded-lg"
+                    />
+                    <div className="text-[1.2rem] font-normal text-[#475569]">
+                      Description
+                    </div>
+                  </div>
+                  <div className="mt-7 text-[1rem] font-normal">
+                    {event.description}
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center">
+                    <ImgComponent
+                      imgSrc={FileIcon}
+                      className="mr-8 p-6 border border-#EFF3F6 rounded-lg"
+                    />
+                    <div className="text-[1.2rem] font-normal text-[#475569]">
+                      Location
+                    </div>
+                  </div>
+                  <div className="mt-7 text-[1rem] font-normal">
+                    {event.location}
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <ImgComponent
+                    imgSrc={LockIcon}
+                    className="mr-8 p-6 border border-#EFF3F6 rounded-lg"
+                  />
+                  <div className="text-[1.4rem] font-normal">
+                    {event.is_private ? "Private" : "Public"}
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <ImgComponent
+                    imgSrc={DollarIcon}
+                    className="mr-8 p-6 border border-#EFF3F6 rounded-lg"
+                  />
+                  <div className="text-[1.4rem] font-normal">
+                    {!event.point_cost && (
+                      <span className="mr-8 text-[1.2rem] text-[#475569]">
+                        Price
+                      </span>
+                    )}
+                    {event.point_cost
+                      ? `${commaNumber(event.point_cost)} Point`
+                      : commaNumber(event.price)}
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <ImgComponent
+                    imgSrc={UsersIcon}
+                    className="mr-8 p-6 border border-#EFF3F6 rounded-lg"
+                  />
+                  <div className="text-[1.4rem] font-normal">
+                    <span className="mr-8 text-[1.2rem] text-[#475569]">
+                      Number of Guests
+                    </span>
+                    {event.reservation_count} / {event.max_participants}
+                  </div>
+                </div>
               </div>
             </div>
             {userInfo && !reservation && (
               <div>
-                {payMethod === "point" ? (
+                {event.point_cost ? (
                   <Drawer>
                     <DrawerTrigger
+                      style={{
+                        background:
+                          "linear-gradient(to right bottom, #007dfe 0%, #04c7db 100%)",
+                      }}
                       disabled={event.point_cost > userInfo.yatPoint}
+                      className="flex items-center justify-center w-full py-10 rounded-xl text-white"
                     >
-                      Buy Ticket
+                      <ImgComponent imgSrc={ArrowIcon} className="mr-8" />
+                      Reserve
                     </DrawerTrigger>
                     <DrawerContent>
                       <DrawerHeader>
@@ -128,13 +222,13 @@ export default function EventDetail() {
                       </DrawerHeader>
                       <DrawerFooter className="grid grid-cols-2 gap-8">
                         <Button
-                          className="bg-sky-blue text-white"
+                          className="bg-sky-blue text-blue"
                           onClick={booking}
                         >
                           Buy
                         </Button>
                         <DrawerClose>
-                          <Button className="w-full bg-sky-red text-white">
+                          <Button className="w-full bg-sky-red text-red">
                             Cancel
                           </Button>
                         </DrawerClose>

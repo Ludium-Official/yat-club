@@ -1,5 +1,7 @@
+import ArrowIcon from "@/assets/EventDetail/ArrowIcon.svg";
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import ImgComponent from "../Image";
 
 const MoonPayBuyWidget = dynamic(
   () => import("@moonpay/moonpay-react").then((mod) => mod.MoonPayBuyWidget),
@@ -31,7 +33,17 @@ const BuyCryptoWidget: React.FC<IBuyCryptoWidgetProps> = ({
 
   return (
     <div>
-      <button onClick={() => setIsVisible(true)}>Buy Ticket</button>
+      <button
+        style={{
+          background:
+            "linear-gradient(to right bottom, #007dfe 0%, #04c7db 100%)",
+        }}
+        className="flex items-center justify-center w-full py-10 rounded-xl text-white"
+        onClick={() => setIsVisible(true)}
+      >
+        <ImgComponent imgSrc={ArrowIcon} className="mr-8" />
+        Reserve
+      </button>
       <MoonPayBuyWidget
         variant="overlay"
         baseCurrencyAmount={totalAmount}

@@ -1,7 +1,7 @@
 "use client";
 
+import EditIcon from "@/assets/common/EditIcon.svg";
 import CalendarIcon from "@/assets/EventCreate/CalendarIcon.svg";
-import EditIcon from "@/assets/EventCreate/EditIcon.svg";
 import LocationIcon from "@/assets/EventCreate/LocationIcon.svg";
 import LockIcon from "@/assets/EventCreate/LockIcon.svg";
 import PlusIcon from "@/assets/EventCreate/PlusIcon.svg";
@@ -455,7 +455,7 @@ export default function CreateEvent() {
                     <FormItem className="w-full">
                       <FormControl>
                         <Input
-                          placeholder="1,000,000"
+                          placeholder="1,000"
                           className="text-[1.4rem]"
                           type="number"
                           {...field}

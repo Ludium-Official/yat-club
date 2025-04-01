@@ -1,9 +1,8 @@
 "use client";
 
+import EditIcon from "@/assets/common/EditIcon.svg";
 import ProfileLogo from "@/assets/Header/ProfileLogo.svg";
-import EditIcon from "@/assets/Mypage/EditIcon.svg";
 import PointIcon from "@/assets/Mypage/PointIcon.svg";
-import WalletIcon from "@/assets/Mypage/WalletIcon.svg";
 import EventList from "@/components/EventList";
 import ImgComponent from "@/components/Image";
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,7 @@ import fetchData from "@/lib/fetchData";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { division } from "@/lib/utils";
 import { ParseEventType } from "@/types/eventType";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -142,18 +142,7 @@ export default function Mypage() {
                   <div className="text-[0.8rem] text-gray1">
                     {userInfo.email}
                   </div>
-                  <div className="grid grid-cols-2 gap-7 mt-14">
-                    <div className="flex flex-col items-center p-8 rounded-[2rem] border border-gray3">
-                      <div className="flex items-center gap-2 text-[0.8rem]">
-                        <ImgComponent imgSrc={WalletIcon.src} />
-                        <div className="px-4 py-3 rounded-lg bg-brand text-white">
-                          Token
-                        </div>
-                      </div>
-                      <div className="mt-6 text-[2.6rem] text-brand font-normal">
-                        30
-                      </div>
-                    </div>
+                  <div className="grid grid-cols-1 gap-7 mt-14">
                     <div className="flex flex-col items-center p-8 rounded-[2rem] border border-gray3">
                       <div className="flex items-center gap-2 text-[0.8rem]">
                         <ImgComponent imgSrc={PointIcon.src} />
@@ -190,8 +179,14 @@ export default function Mypage() {
               </div>
             </div>
             <div>
-              <div className="mx-20 mt-20 mb-10 text-[2rem] font-normal">
+              <div className="flex items-center justify-between mx-20 mt-20 mb-10 text-[2rem] font-normal">
                 My events list
+                <Link
+                  href="/participate"
+                  className="bg-mid-blue p-8 rounded-xl text-[1.2rem] text-blue"
+                >
+                  Participate event
+                </Link>
               </div>
               <EventList
                 isPast={isPast}
