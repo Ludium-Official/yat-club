@@ -21,6 +21,7 @@ import { useAppSelector } from "@/lib/hooks";
 import { ReservationType } from "@/types/reservationType";
 import clsx from "clsx";
 import dayjs from "dayjs";
+import { QrCode } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -77,9 +78,14 @@ export default function EventDetail() {
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle className="flex flex-col items-center justify-center text-[#5299FF]">
-                            {reservation.event_title}
-                            <div className="bg-black w-200 h-200 my-20"></div>
+                          <DialogTitle className="flex flex-col items-center justify-center ">
+                            <div className="text-[#5299FF]">
+                              {reservation.event_title}
+                            </div>
+                            <QrCode
+                              className="w-200 h-200 my-20"
+                              values={String(reservation.reservation_id)}
+                            />
                           </DialogTitle>
                           <DialogDescription className="pt-20 border-t border-dashed">
                             <div className="flex items-center gap-16 mx-15">
@@ -119,7 +125,7 @@ export default function EventDetail() {
                   )}
                 </div>
                 <Link
-                  href={`/event/${reservation.event_id}`}
+                  href={`/participate/${reservation.event_id}`}
                   className="text-[1.6rem] font-medium"
                 >
                   {reservation.event_title}

@@ -123,7 +123,7 @@ export default function Mypage() {
                     >
                       <Input
                         value={userName}
-                        className="max-w-[10rem] h-[2.4rem]"
+                        className="min-w-100 max-w-150 h-[2.4rem] p-10 rounded-md"
                         onChange={(e) => setUserName(e.target.value)}
                         required
                       />
@@ -171,7 +171,7 @@ export default function Mypage() {
                   </div>
                 </div>
                 <div
-                  className="cursor-pointer w-22 h-22"
+                  className="cursor-pointer w-22 h-22 mt-4"
                   onClick={() => setIsEditName((prev) => !prev)}
                 >
                   <ImgComponent imgSrc={EditIcon.src} />
