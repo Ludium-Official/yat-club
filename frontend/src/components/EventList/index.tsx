@@ -78,7 +78,7 @@ const EventList: React.FC<IEventListProps> = ({
             <Link
               key={event.id}
               href={`/event/${event.id}`}
-              className="flex items-center gap-16 p-12 rounded-[2rem] border border-gray2 bg-white"
+              className="flex items-center gap-16 p-12 rounded-[2rem] border border-gray3 bg-white"
             >
               <div
                 style={{

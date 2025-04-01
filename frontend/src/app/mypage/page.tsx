@@ -112,7 +112,7 @@ export default function Mypage() {
       {userInfo ? (
         <div className="flex flex-col justify-between h-full">
           <div>
-            <div className="flex gap-20 mx-20 mt-30 mb-11 px-20 py-24 rounded-[2rem] border border-gray2 bg-white">
+            <div className="flex gap-20 mx-20 mt-30 mb-11 px-20 py-24 rounded-[2rem] border border-gray3 bg-white">
               <ImgComponent imgSrc={ProfileLogo.src} />
               <div className="flex justify-between w-full">
                 <div className="flex flex-col w-full">
@@ -128,7 +128,7 @@ export default function Mypage() {
                         required
                       />
                       <Button
-                        className="p-5 rounded-md border border-gray3 text-[1rem]"
+                        className="p-5 rounded-md border border-gray4 text-[1rem]"
                         type="submit"
                       >
                         Edit
@@ -139,11 +139,11 @@ export default function Mypage() {
                       {userInfo.name}
                     </div>
                   )}
-                  <div className="text-[0.8rem] text-gray1">
+                  <div className="text-[0.8rem] text-gray2">
                     {userInfo.email}
                   </div>
                   <div className="grid grid-cols-2 gap-7 mt-14">
-                    <div className="flex flex-col items-center p-8 rounded-[2rem] border border-gray3">
+                    <div className="flex flex-col items-center p-8 rounded-[2rem] border border-gray4">
                       <div className="flex items-center gap-2 text-[0.8rem]">
                         <ImgComponent imgSrc={WalletIcon.src} />
                         <div className="px-4 py-3 rounded-lg bg-brand text-white">
@@ -154,7 +154,7 @@ export default function Mypage() {
                         30
                       </div>
                     </div>
-                    <div className="flex flex-col items-center p-8 rounded-[2rem] border border-gray3">
+                    <div className="flex flex-col items-center p-8 rounded-[2rem] border border-gray4">
                       <div className="flex items-center gap-2 text-[0.8rem]">
                         <ImgComponent imgSrc={PointIcon.src} />
                         <div
