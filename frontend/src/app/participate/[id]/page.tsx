@@ -20,9 +20,8 @@ import dayjs from "dayjs";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
-// TODO: qr 찍고 그거 reservations db 업데이트
-// TODO: reject하는것도 만들어야 함
 export default function ParticipateDetail() {
   const { id } = useParams();
 
@@ -47,6 +46,18 @@ export default function ParticipateDetail() {
     setReservations(reservations);
   }, [id]);
 
+  const handleReservation = async (
+    id: string,
+    userId: string,
+    status: "confirmed" | "rejected" | "completed"
+  ) => {
+    await fetchData("/reservation/edit-status", "POST", {
+      id,
+      userId,
+      status,
+    });
+  };
+
   useEffect(() => {
     callEventDetail();
   }, [callEventDetail]);
@@ -69,9 +80,17 @@ export default function ParticipateDetail() {
 
       scanner.render(
         (result) => {
-          scanner?.clear();
-          console.log(result);
-          setIsScanning(false);
+          try {
+            scanner?.clear();
+            const values = result.split("-");
+            handleReservation(values[0], values[1], "completed");
+            setIsScanning(false);
+
+            toast.success("QR code scanned successfully!");
+            callEventDetail();
+          } catch (err) {
+            console.error(err);
+          }
         },
         (err) => {
           console.warn(err);
@@ -84,7 +103,7 @@ export default function ParticipateDetail() {
         scanner.clear();
       }
     };
-  }, [isScanning]);
+  }, [callEventDetail, isScanning]);
 
   if (!id || !event) {
     return;
@@ -94,7 +113,7 @@ export default function ParticipateDetail() {
     <Wrapper>
       <div className="mx-20 mt-20">
         <div className="flex items-center justify-between my-10 text-[2rem] font-normal">
-          My event
+          {event.owner_id === userInfo?.id ? "My event" : "Participate event"}
           {event.owner_id === userInfo?.id && (
             <div>
               {!isScanning ? (
@@ -152,7 +171,7 @@ export default function ParticipateDetail() {
             const status = () => {
               if (reservation.reservation_status === "completed") {
                 return {
-                  label: "Paid",
+                  label: "Complete",
                   bgColor: "bg-mid-blue",
                   textColor: "text-blue",
                   img: CorrectIcon,
@@ -169,7 +188,7 @@ export default function ParticipateDetail() {
               return {
                 label: "Reject",
                 bgColor: "bg-sky-red",
-                textColor: "bg-red",
+                textColor: "text-red",
                 img: IncorrectIcon,
               };
             };
@@ -191,15 +210,37 @@ export default function ParticipateDetail() {
                     </div>
                   </div>
                 </div>
-                <div
-                  className={clsx(
-                    status().bgColor,
-                    status().textColor,
-                    "flex items-center rounded-full px-7 py-3 text-[0.8rem]"
-                  )}
-                >
-                  {status().label}
-                  <ImgComponent imgSrc={status().img} className="ml-3" />
+                <div className="flex items-center">
+                  <div
+                    className={clsx(
+                      status().bgColor,
+                      status().textColor,
+                      "flex items-center rounded-full px-7 py-3 text-[0.8rem]"
+                    )}
+                  >
+                    {status().label}
+                    <ImgComponent imgSrc={status().img} className="ml-3" />
+                  </div>
+                  {event.owner_id === userInfo?.id &&
+                    reservation.reservation_status === "confirmed" && (
+                      <div className="flex items-center gap-3">
+                        <div
+                          onClick={() => {
+                            handleReservation(
+                              String(reservation.reservation_id),
+                              reservation.user_userId,
+                              "rejected"
+                            );
+                            callEventDetail();
+                          }}
+                        >
+                          <ImgComponent
+                            imgSrc={IncorrectIcon}
+                            className="bg-bg-sky-red ml-5"
+                          />
+                        </div>
+                      </div>
+                    )}
                 </div>
               </div>
             );

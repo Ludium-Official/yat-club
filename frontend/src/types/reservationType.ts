@@ -15,4 +15,5 @@ export interface ReservationForUserType {
   user_email: string;
   user_id: number;
   user_name: string;
+  user_userId: string;
 }

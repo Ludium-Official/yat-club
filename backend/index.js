@@ -336,7 +336,8 @@ app.post("/own/reservation", withAuth, (req, res) => {
       r.status AS reservation_status,
       u.id AS user_id,
       u.name AS user_name,
-      u.email AS user_email
+      u.email AS user_email,
+      u.userId AS user_userId
     FROM 
       yatclub.Reservations r
     INNER JOIN 
@@ -348,6 +349,26 @@ app.post("/own/reservation", withAuth, (req, res) => {
   `;
 
   db.query(query, [eventId], (err, results) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send("Database query error");
+    }
+    res.json(results);
+  });
+});
+
+app.post("/reservation/edit-status", withAuth, (req, res) => {
+  const { id, userId, status } = req.body;
+
+  const query = `
+    UPDATE yatclub.Reservations r
+    INNER JOIN yatclub.Users u
+    ON r.user_id = u.id
+    SET r.status = ?
+    WHERE r.id = ? AND u.userId = ?
+  `;
+
+  db.query(query, [status, id, userId], (err, results) => {
     if (err) {
       console.error(err.message);
       return res.status(500).send("Database query error");
