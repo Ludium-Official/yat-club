@@ -482,7 +482,7 @@ export default function CreateEvent() {
                             />
                           </SelectTrigger>
                           <SelectContent className="text-[1.4rem]">
-                            <SelectItem value="eth">USD</SelectItem>
+                            <SelectItem value="sol">USD</SelectItem>
                             <SelectItem value="point">Point</SelectItem>
                           </SelectContent>
                         </Select>
