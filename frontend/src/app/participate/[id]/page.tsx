@@ -19,6 +19,7 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { useParams } from "next/navigation";
+import { isEmpty } from "ramda";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -167,84 +168,92 @@ export default function ParticipateDetail() {
         </div>
         <div className="my-10 text-[2rem] font-normal">Guest list</div>
         <div>
-          {reservations.map((reservation) => {
-            const status = () => {
-              if (reservation.reservation_status === "completed") {
-                return {
-                  label: "Complete",
-                  bgColor: "bg-mid-blue",
-                  textColor: "text-blue",
-                  img: CorrectIcon,
-                };
-              } else if (reservation.reservation_status === "confirmed") {
-                return {
-                  label: "Confirm",
-                  bgColor: "bg-sky-green",
-                  textColor: "text-green",
-                  img: CheckIcon,
-                };
-              }
+          {isEmpty(reservations) ? (
+            <div className="flex items-center justify-center w-full h-[20rem] text-[1.4rem] font-normal">
+              No guests yet.
+            </div>
+          ) : (
+            reservations.map((reservation) => {
+              const status = () => {
+                if (reservation.reservation_status === "completed") {
+                  return {
+                    label: "Complete",
+                    bgColor: "bg-mid-blue",
+                    textColor: "text-blue",
+                    img: CorrectIcon,
+                  };
+                } else if (reservation.reservation_status === "confirmed") {
+                  return {
+                    label: "Confirm",
+                    bgColor: "bg-sky-green",
+                    textColor: "text-green",
+                    img: CheckIcon,
+                  };
+                }
 
-              return {
-                label: "Reject",
-                bgColor: "bg-sky-red",
-                textColor: "text-red",
-                img: IncorrectIcon,
+                return {
+                  label: "Reject",
+                  bgColor: "bg-sky-red",
+                  textColor: "text-red",
+                  img: IncorrectIcon,
+                };
               };
-            };
 
-            return (
-              <div
-                key={reservation.reservation_id}
-                className="flex items-center justify-between px-10 py-8 border border-[#D9D9D9] rounded-[1rem]"
-              >
-                <div className="flex items-center">
-                  <ImgComponent
-                    imgSrc={UserDefaultIcon}
-                    className="w-36! h-36! mr-9 text-[#2B3F5D]"
-                  />
-                  <div>
-                    <div className="text-[1.2rem]">{reservation.user_name}</div>
-                    <div className="mt-4 text-[0.8rem]">
-                      {reservation.user_email}
+              return (
+                <div
+                  key={reservation.reservation_id}
+                  className="flex items-center justify-between px-10 py-8 border border-[#D9D9D9] rounded-[1rem]"
+                >
+                  <div className="flex items-center">
+                    <ImgComponent
+                      imgSrc={UserDefaultIcon}
+                      className="w-36! h-36! mr-9 text-[#2B3F5D]"
+                    />
+                    <div>
+                      <div className="text-[1.2rem]">
+                        {reservation.user_name}
+                      </div>
+                      <div className="mt-4 text-[0.8rem]">
+                        {reservation.user_email}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center">
-                  <div
-                    className={clsx(
-                      status().bgColor,
-                      status().textColor,
-                      "flex items-center rounded-full px-7 py-3 text-[0.8rem]"
-                    )}
-                  >
-                    {status().label}
-                    <ImgComponent imgSrc={status().img} className="ml-3" />
-                  </div>
-                  {event.owner_id === userInfo?.id &&
-                    reservation.reservation_status === "confirmed" && (
-                      <div className="flex items-center gap-3">
-                        <div
-                          onClick={() => {
-                            handleReservation(
-                              String(reservation.reservation_id),
-                              reservation.user_userId,
-                              "rejected"
-                            );
-                            callEventDetail();
-                          }}
-                        >
-                          <ImgComponent
-                            imgSrc={IncorrectIcon}
-                            className="bg-bg-sky-red ml-5"
-                          />
+                  <div className="flex items-center">
+                    <div
+                      className={clsx(
+                        status().bgColor,
+                        status().textColor,
+                        "flex items-center rounded-full px-7 py-3 text-[0.8rem]"
+                      )}
+                    >
+                      {status().label}
+                      <ImgComponent imgSrc={status().img} className="ml-3" />
+                    </div>
+                    {event.owner_id === userInfo?.id &&
+                      reservation.reservation_status === "confirmed" && (
+                        <div className="flex items-center gap-3">
+                          <div
+                            onClick={() => {
+                              handleReservation(
+                                String(reservation.reservation_id),
+                                reservation.user_userId,
+                                "rejected"
+                              );
+                              callEventDetail();
+                            }}
+                          >
+                            <ImgComponent
+                              imgSrc={IncorrectIcon}
+                              className="bg-bg-sky-red ml-5"
+                            />
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
     </Wrapper>

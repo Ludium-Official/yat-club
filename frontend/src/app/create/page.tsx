@@ -140,6 +140,20 @@ export default function CreateEvent() {
       });
 
       toast.success("Success!");
+
+      form.reset({
+        image: undefined,
+        title: "",
+        date: undefined,
+        description: "",
+        location: "",
+        private: false,
+        price: "",
+        target: "",
+        guests: "",
+      });
+
+      setPreviewImg("");
     } catch (err) {
       console.error(err);
     }

@@ -109,11 +109,11 @@ export default function EventDetail() {
         </div>
         {event ? (
           <div className="flex flex-col gap-20">
-            <ImgComponent
-              imgSrc={event.image_url}
-              width={500}
-              height={500}
-              className="rounded-[2rem] mt-20"
+            <div
+              style={{
+                backgroundImage: `url(${event.image_url})`,
+              }}
+              className="aspect-square w-full bg-no-repeat bg-cover bg-center rounded-[2rem] mt-20"
             />
             <div className="flex flex-col items-center">
               <div className="text-center mb-20 text-[3.2rem] font-normal">
