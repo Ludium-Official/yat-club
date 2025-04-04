@@ -1,9 +1,9 @@
-import { balanceSlice } from "@/lib/features/wepin/balanceSlice";
+import { accountsSlice } from "@/lib/features/wepin/accountsSlice";
 import { loginSlice } from "@/lib/features/wepin/loginSlice";
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineSlices, configureStore } from "@reduxjs/toolkit";
 
-const rootReducer = combineSlices(loginSlice, balanceSlice);
+const rootReducer = combineSlices(loginSlice, accountsSlice);
 export type RootState = ReturnType<typeof rootReducer>;
 
 export const makeStore = () => {

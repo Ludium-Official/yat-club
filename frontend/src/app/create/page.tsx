@@ -36,6 +36,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import Wrapper from "@/components/Wrapper";
+import { selectAccounts } from "@/lib/features/wepin/accountsSlice";
 import { selectUserInfo } from "@/lib/features/wepin/loginSlice";
 import fetchData from "@/lib/fetchData";
 import { useAppSelector } from "@/lib/hooks";
@@ -49,10 +50,21 @@ import { z } from "zod";
 
 export default function CreateEvent() {
   const userInfo = useAppSelector(selectUserInfo);
+  const accounts = useAppSelector(selectAccounts);
 
   const [previewImg, setPreviewImg] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isGuestsEditing, setIsGuestsEditing] = useState(false);
+
+  // eth일 경우
+  // Testnet일 경우 evmEth-Sepolia
+  // Mainnet일 경우 ETHEREUM
+  // sol일 경우
+  // Testnet일 경우 SOLANA-DEVNET
+  // Mainnet일 경우 SOLANA
+  const accountRecvAddr = accounts.find(
+    (account) => account.network === "evmEth-Sepolia"
+  )?.address;
 
   const hours = Array.from({ length: 12 }, (_, i) => i + 1);
 
@@ -132,7 +144,7 @@ export default function CreateEvent() {
         image_url: response.url,
         is_private: data.private,
         max_participants: Number(data.guests),
-        receive_address: userInfo.walletId,
+        receive_address: accountRecvAddr,
         start_at: dayjs(data.date).format("YYYY-MM-DD HH:mm:ss"),
         location: data.location,
         price: Number(data.price),

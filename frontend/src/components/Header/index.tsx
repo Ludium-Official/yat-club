@@ -5,7 +5,7 @@ import OpHeaderLogo from "@/assets/Header/OpHeaderLogo.svg";
 import UserDefaultIcon from "@/assets/Header/UserDefaultIcon.svg";
 import ImgComponent from "@/components/Image";
 import { Button } from "@/components/ui/button";
-import { setBalances } from "@/lib/features/wepin/balanceSlice";
+import { setAccounts } from "@/lib/features/wepin/accountsSlice";
 import {
   selectIsLoggedIn,
   selectUserInfo,
@@ -14,7 +14,6 @@ import {
 } from "@/lib/features/wepin/loginSlice";
 import {
   accountsSDK,
-  balanceSDK,
   statusSDK,
   userLoginSDK,
 } from "@/lib/features/wepin/useWepin";
@@ -53,9 +52,8 @@ const Header: React.FC = () => {
     dispatch(setIsLoggedIn(true));
 
     const accounts = await accountsSDK();
-    const balances = await balanceSDK(accounts);
 
-    dispatch(setBalances(balances));
+    dispatch(setAccounts(accounts));
   }, [dispatch]);
 
   useEffect(() => {
