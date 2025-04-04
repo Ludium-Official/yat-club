@@ -1,8 +1,10 @@
 "use client";
 
 import EditIcon from "@/assets/common/EditIcon.svg";
-import ProfileLogo from "@/assets/Header/ProfileLogo.svg";
+import ArrowIcon from "@/assets/Mypage/ArrowIcon.svg";
+import LogoutIcon from "@/assets/Mypage/LogoutIcon.svg";
 import PointIcon from "@/assets/Mypage/PointIcon.svg";
+import UserDefaultIcon from "@/assets/Mypage/UserDefaultIcon.svg";
 import EventList from "@/components/EventList";
 import ImgComponent from "@/components/Image";
 import { Button } from "@/components/ui/button";
@@ -14,10 +16,10 @@ import {
   setIsLoggedIn,
   setUserInfo,
 } from "@/lib/features/wepin/loginSlice";
-import { logoutSDK } from "@/lib/features/wepin/useWepin";
+import { logoutSDK, openWidgetSDK } from "@/lib/features/wepin/useWepin";
 import fetchData from "@/lib/fetchData";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { division } from "@/lib/utils";
+import { commaNumber, division } from "@/lib/utils";
 import { ParseEventType } from "@/types/eventType";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -112,9 +114,15 @@ export default function Mypage() {
       {userInfo ? (
         <div className="flex flex-col justify-between h-full">
           <div>
-            <div className="flex gap-20 mx-20 mt-30 mb-11 px-20 py-24 rounded-[2rem] border border-gray2 bg-white">
-              <ImgComponent imgSrc={ProfileLogo.src} />
-              <div className="flex justify-between w-full">
+            <div
+              style={{
+                background:
+                  "linear-gradient(to right bottom, #D9E6FF 0%, #F6F6F6 100%)",
+              }}
+              className="drop-shadow-[0.3rem_0.3rem_1.3rem_rgba(54,51,105,0.1)] mx-20 mt-30 mb-11 pl-20 pr-43 py-24 rounded-[2rem] border border-gray2 bg-white"
+            >
+              <div className="flex gap-20">
+                <ImgComponent imgSrc={UserDefaultIcon} />
                 <div className="flex flex-col w-full">
                   {isEditName ? (
                     <form
@@ -135,58 +143,70 @@ export default function Mypage() {
                       </Button>
                     </form>
                   ) : (
-                    <div className="text-[2rem] font-normal">
-                      {userInfo.name}
+                    <div className="flex items-center gap-6">
+                      <div className="text-[2rem] font-normal">
+                        {userInfo.name}
+                      </div>
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => setIsEditName((prev) => !prev)}
+                      >
+                        <ImgComponent imgSrc={EditIcon.src} />
+                      </div>
                     </div>
                   )}
                   <div className="text-[0.8rem] text-gray1">
                     {userInfo.email}
                   </div>
                   <div className="grid grid-cols-1 gap-7 mt-14">
-                    <div className="flex flex-col items-center p-8 rounded-[2rem] border border-gray3">
-                      <div className="flex items-center gap-2 text-[0.8rem]">
+                    <div className="flex flex-col bg-white p-8 rounded-[1rem] font-medium">
+                      <div className="flex gap-2 text-[1.2rem] border-b border-[rgb(97 127 179 / 30%)] pb-4">
                         <ImgComponent imgSrc={PointIcon.src} />
-                        <div
-                          style={{
-                            background:
-                              "linear-gradient(to right bottom, #007dfe 0%, #04c7db 100%)",
-                          }}
-                          className="px-4 py-3 rounded-lg text-white"
-                        >
-                          Point
-                        </div>
+                        <div className="pl-4 text-[#256BD5]">Point</div>
                       </div>
-                      <div
-                        style={{
-                          background:
-                            "linear-gradient(to right bottom, #007dfe 0%, #04c7db 100%)",
-                          color: "transparent",
-                          WebkitBackgroundClip: "text",
-                        }}
-                        className="mt-6 text-[2.6rem] font-normal"
-                      >
-                        {userInfo.yatPoint}
+                      <div className="mt-4 text-[2.8rem] text-center text-[#256BD5]">
+                        {commaNumber(userInfo.yatPoint)}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div
-                  className="cursor-pointer w-22 h-22 mt-4"
-                  onClick={() => setIsEditName((prev) => !prev)}
+              </div>
+              <div className="flex items-center justify-end gap-10 mt-10 text-white text-[0.8rem]">
+                <Button
+                  onClick={async () => await openWidgetSDK()}
+                  className="bg-[#D9DDE1] px-8 py-4 rounded-full border border-white"
                 >
-                  <ImgComponent imgSrc={EditIcon.src} />
-                </div>
+                  Open Wallet
+                </Button>
+                <Button
+                  onClick={logout}
+                  className="flex items-center gap-2 bg-[#D9DDE1] px-8 py-4 rounded-full border border-white"
+                >
+                  <ImgComponent imgSrc={LogoutIcon} />
+                  Logout
+                </Button>
               </div>
             </div>
+            <div className="flex justify-center w-full my-20 ">
+              <Link
+                href="/participate"
+                className="relative bg-white text-blue text-[1.4rem] px-1 py-1 rounded-full border border-transparent"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(#f4f5f7, #f4f5f7), linear-gradient(to right bottom, #007DFE 0%, #04C7DB 100%)",
+                  backgroundOrigin: "border-box",
+                  backgroundClip: "content-box, border-box",
+                }}
+              >
+                <div className="flex items-center gap-4 px-15 py-10">
+                  <ImgComponent imgSrc={ArrowIcon} />
+                  Participate Event
+                </div>
+              </Link>
+            </div>
             <div>
-              <div className="flex items-center justify-between mx-20 mt-20 mb-10 text-[2rem] font-normal">
+              <div className="mx-20 mt-20 mb-10 text-[2rem] font-normal">
                 Participate list
-                <Link
-                  href="/participate"
-                  className="bg-mid-blue p-8 rounded-xl text-[1.2rem] text-blue"
-                >
-                  Participate event
-                </Link>
               </div>
               <EventList
                 isPast={isPast}
@@ -197,12 +217,6 @@ export default function Mypage() {
               />
             </div>
           </div>
-          <Button
-            onClick={logout}
-            className="mx-20 mt-20 bg-sky-blue text-white"
-          >
-            Logout
-          </Button>
         </div>
       ) : (
         <div>null</div>

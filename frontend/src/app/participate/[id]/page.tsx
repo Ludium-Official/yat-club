@@ -3,7 +3,7 @@
 import CalendarIcon from "@/assets/EventCreate/CalendarIcon.svg";
 import LocationIcon from "@/assets/EventCreate/LocationIcon.svg";
 import UsersIcon from "@/assets/EventCreate/UsersIcon.svg";
-import ProfileLogo from "@/assets/Header/ProfileLogo.svg";
+import UserDefaultIcon from "@/assets/Mypage/UserDefaultIcon.svg";
 import CheckIcon from "@/assets/Participate/CheckIcon.svg";
 import CorrectIcon from "@/assets/Participate/CorrectIcon.svg";
 import IncorrectIcon from "@/assets/Participate/IncorrectIcon.svg";
@@ -200,7 +200,7 @@ export default function ParticipateDetail() {
               >
                 <div className="flex items-center">
                   <ImgComponent
-                    imgSrc={ProfileLogo}
+                    imgSrc={UserDefaultIcon}
                     className="w-36! h-36! mr-9 text-[#2B3F5D]"
                   />
                   <div>

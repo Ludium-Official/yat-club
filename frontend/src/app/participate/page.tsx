@@ -3,7 +3,7 @@
 import QrcodeIcon from "@/assets/common/QrcodeIcon.svg";
 import CalendarIcon from "@/assets/EventDetail/CalendarIcon.svg";
 import LockIcon from "@/assets/EventDetail/LockIcon.svg";
-import ProfileLogo from "@/assets/Header/ProfileLogo.svg";
+import UserDefaultIcon from "@/assets/Mypage/UserDefaultIcon.svg";
 import CorrectIcon from "@/assets/Participate/CorrectIcon.svg";
 import IncorrectIcon from "@/assets/Participate/IncorrectIcon.svg";
 import ImgComponent from "@/components/Image";
@@ -93,7 +93,7 @@ export default function EventDetail() {
                           <DialogDescription className="pt-20 border-t border-dashed">
                             <div className="flex items-center gap-16 mx-15">
                               <ImgComponent
-                                imgSrc={ProfileLogo}
+                                imgSrc={UserDefaultIcon}
                                 className="w-48! h-48!"
                               />
                               <div className="text-[1.8rem] text-[#5A5D61] text-start">

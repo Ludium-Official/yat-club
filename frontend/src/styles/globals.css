@@ -196,8 +196,9 @@ html {
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(to bottom, #f4f5f7 0%, #eeeeee 50%, #ffffff 96%);
 
   line-height: normal;
   font-weight: 300;
+  color: #3c414d;
 }

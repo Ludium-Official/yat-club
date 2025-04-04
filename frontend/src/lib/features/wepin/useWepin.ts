@@ -53,3 +53,10 @@ export const balanceSDK = async (accounts: Account[]) => {
 
   return balances;
 };
+
+export const openWidgetSDK = async () => {
+  const wepinSDK = getWepinSDK();
+  await initializeWepinSDK();
+
+  await wepinSDK.openWidget();
+};

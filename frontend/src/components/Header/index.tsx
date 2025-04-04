@@ -2,7 +2,7 @@
 
 import HeaderLogo from "@/assets/Header/HeaderLogo.svg";
 import OpHeaderLogo from "@/assets/Header/OpHeaderLogo.svg";
-import ProfileLogo from "@/assets/Header/ProfileLogo.svg";
+import UserDefaultIcon from "@/assets/Header/UserDefaultIcon.svg";
 import ImgComponent from "@/components/Image";
 import { Button } from "@/components/ui/button";
 import { setBalances } from "@/lib/features/wepin/balanceSlice";
@@ -110,12 +110,12 @@ const Header: React.FC = () => {
         )}
         {isLoggedIn ? (
           <Link className="rounded-full w-30 h-30" href="/mypage">
-            <ImgComponent imgSrc={ProfileLogo.src} />
+            <ImgComponent imgSrc={UserDefaultIcon} />
           </Link>
         ) : (
           <Button
             onClick={login}
-            className="bg-transparent border border-sky-blue text-sky-blue"
+            className="bg-transparent border border-[#87B8FF] text-[#87B8FF] text-[1.2rem]"
           >
             Login
           </Button>
