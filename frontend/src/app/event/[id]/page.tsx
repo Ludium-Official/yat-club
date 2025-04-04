@@ -11,15 +11,13 @@ import ImgComponent from "@/components/Image";
 import MoonPayWidget from "@/components/MoonPayWidget";
 import { Button } from "@/components/ui/button";
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import Wrapper from "@/components/Wrapper";
 import { selectUserInfo } from "@/lib/features/wepin/loginSlice";
 import fetchData from "@/lib/fetchData";
@@ -205,45 +203,47 @@ export default function EventDetail() {
             {userInfo && !reservation && (
               <div>
                 {event.point_cost ? (
-                  <Drawer>
-                    <DrawerTrigger
-                      style={{
-                        background:
-                          "linear-gradient(to right bottom, #007dfe 0%, #04c7db 100%)",
-                      }}
-                      disabled={event.point_cost > userInfo.yatPoint}
-                      className="flex items-center justify-center w-full py-10 rounded-xl text-white"
-                    >
-                      <ImgComponent imgSrc={ArrowIcon} className="mr-8" />
-                      Reserve
-                    </DrawerTrigger>
-                    <DrawerContent>
-                      <DrawerHeader>
-                        <DrawerTitle>Buy with point</DrawerTitle>
-                        <DrawerDescription>
+                  <Dialog>
+                    <DialogTrigger className="w-full h-fit">
+                      <Button
+                        style={{
+                          background:
+                            "linear-gradient(to right bottom, #007dfe 0%, #04c7db 100%)",
+                        }}
+                        disabled={event.point_cost > userInfo.yatPoint}
+                        className="flex items-center justify-center w-full py-10 rounded-xl text-white"
+                      >
+                        <ImgComponent imgSrc={ArrowIcon} className="mr-8" />
+                        Reserve
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle className="flex flex-col items-center justify-center pb-20">
+                          Buy with point
+                        </DialogTitle>
+                        <DialogDescription className="pt-20 border-t">
                           <div>Your point: {userInfo.yatPoint}</div>
                           <div>Use point: {event.point_cost}</div>
                           <div>
                             Rest point: {userInfo.yatPoint - event.point_cost}
                           </div>
                           <div>Really?</div>
-                        </DrawerDescription>
-                      </DrawerHeader>
-                      <DrawerFooter className="grid grid-cols-2 gap-8">
-                        <Button
-                          className="bg-sky-blue text-blue"
-                          onClick={booking}
-                        >
-                          Buy
-                        </Button>
-                        <DrawerClose>
-                          <Button className="w-full bg-sky-red text-red">
-                            Cancel
-                          </Button>
-                        </DrawerClose>
-                      </DrawerFooter>
-                    </DrawerContent>
-                  </Drawer>
+                          <div className="grid grid-cols-2 gap-5 mt-20">
+                            <Button
+                              className="bg-sky-blue text-blue"
+                              onClick={booking}
+                            >
+                              Buy
+                            </Button>
+                            <Button className="w-full bg-sky-red text-red">
+                              Cancel
+                            </Button>
+                          </div>
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
                 ) : (
                   <MoonPayWidget
                     price={event.price}
