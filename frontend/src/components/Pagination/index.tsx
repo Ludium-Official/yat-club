@@ -3,7 +3,6 @@
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -31,12 +30,21 @@ const PaginationComp: React.FC<PaginationCompProps> = ({
     setTotalPage(pageCount);
   }, [totalCount]);
 
-  const displayPageCount = totalPage - page >= 5 ? 4 : totalPage;
-
   const rendering = () => {
     const result = [];
+    const maxVisiblePages = 5;
 
-    for (let i = 1; i <= displayPageCount; i++) {
+    const startPage = Math.max(
+      1,
+      Math.min(
+        page - Math.floor(maxVisiblePages / 2),
+        totalPage - maxVisiblePages + 1
+      )
+    );
+
+    const endPage = Math.min(totalPage, startPage + maxVisiblePages - 1);
+
+    for (let i = startPage; i <= endPage; i++) {
       result.push(
         <PaginationItem key={i}>
           <PaginationLink
@@ -74,21 +82,6 @@ const PaginationComp: React.FC<PaginationCompProps> = ({
               />
             </PaginationItem>
             {rendering()}
-            {totalPage - page >= 5 && (
-              <>
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink
-                    onClick={() => setPage(totalPage)}
-                    className="p-3"
-                  >
-                    {totalPage}
-                  </PaginationLink>
-                </PaginationItem>
-              </>
-            )}
             <PaginationItem>
               <PaginationNext
                 onClick={() =>
