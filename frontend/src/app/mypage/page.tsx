@@ -126,6 +126,7 @@ export default function Mypage() {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("folder", "profile");
+      formData.append("oldImageUrl", userInfo?.profile_url || "");
 
       try {
         const response = await fetchData(

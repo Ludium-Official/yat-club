@@ -415,11 +415,23 @@ app.post(
     try {
       const bucket = storage.bucket("yat-club");
       const file = req.file;
-      const { folder } = req.body;
+      const { folder, oldImageUrl } = req.body;
 
       if (!file) {
         console.error("No file uploaded.");
         return res.status(400).send("No file uploaded.");
+      }
+
+      if (oldImageUrl) {
+        const oldImageName = oldImageUrl.split(`${bucket.name}/`)[1];
+        const oldFile = bucket.file(oldImageName);
+
+        try {
+          await oldFile.delete();
+          console.log(`Deleted old image: ${oldImageName}`);
+        } catch (err) {
+          console.error("Error deleting old image:", err);
+        }
       }
 
       const imgName = `${folder}/${uuidv4()}`;
