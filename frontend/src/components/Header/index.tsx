@@ -93,7 +93,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-between px-20 py-10 border-b">
+    <div className="flex items-center justify-between bg-white px-20 py-10 border-b">
       <Link href="/">
         <ImgComponent imgSrc={isLoggedIn ? OpHeaderLogo : HeaderLogo} />
       </Link>

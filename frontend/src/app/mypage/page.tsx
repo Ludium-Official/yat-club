@@ -278,12 +278,10 @@ export default function Mypage() {
             <div className="flex justify-center w-full my-20 ">
               <Link
                 href="/participate"
-                className="relative bg-white text-blue text-[1.4rem] px-1 py-1 rounded-full border border-transparent"
+                className="rounded-full text-white text-[1.4rem]"
                 style={{
-                  backgroundImage:
-                    "linear-gradient(#f4f5f7, #f4f5f7), linear-gradient(to right bottom, #007DFE 0%, #04C7DB 100%)",
-                  backgroundOrigin: "border-box",
-                  backgroundClip: "content-box, border-box",
+                  background:
+                    "linear-gradient(to right, #33B0FA 0%, #8749FF 100%)",
                 }}
               >
                 <div className="flex items-center gap-4 px-15 py-10">

@@ -3,9 +3,12 @@
 import EditIcon from "@/assets/common/EditIcon.svg";
 import ArrowIcon from "@/assets/EventDetail/ArrowIcon.svg";
 import CalendarIcon from "@/assets/EventDetail/CalendarIcon.svg";
+import ConfirmIcon from "@/assets/EventDetail/ConfirmIcon.svg";
 import DollarIcon from "@/assets/EventDetail/DollarIcon.svg";
 import FileIcon from "@/assets/EventDetail/FileIcon.svg";
 import LockIcon from "@/assets/EventDetail/LockIcon.svg";
+import MinusIcon from "@/assets/EventDetail/MinusIcon.svg";
+import PayPointIcon from "@/assets/EventDetail/PayPointIcon.svg";
 import UsersIcon from "@/assets/EventDetail/UsersIcon.svg";
 import ImgComponent from "@/components/Image";
 import MoonPayWidget from "@/components/MoonPayWidget";
@@ -217,29 +220,47 @@ export default function EventDetail() {
                         Reserve
                       </Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="bg-[#eeeff3] px-20 py-40">
                       <DialogHeader>
-                        <DialogTitle className="flex flex-col items-center justify-center pb-20">
+                        <DialogTitle className="flex flex-col items-center justify-center pb-20 font-normal text-[3.2rem]">
                           Buy with point
+                          <ImgComponent
+                            imgSrc={PayPointIcon}
+                            className="mt-16"
+                          />
                         </DialogTitle>
-                        <DialogDescription className="pt-20 border-t">
-                          <div>Your point: {userInfo.yatPoint}</div>
-                          <div>Use point: {event.point_cost}</div>
-                          <div>
-                            Rest point: {userInfo.yatPoint - event.point_cost}
+                        <DialogDescription>
+                          <div className="flex flex-col gap-16 bg-white rounded-[1rem] p-20 text-[1.6rem] font-normal">
+                            <div className="grid grid-cols-[1.6rem_11rem_minmax(0,1fr)] items-center gap-10 text-black">
+                              <span></span>
+                              <span className="text-start">Your point</span>
+                              <span className="text-start">
+                                {userInfo.yatPoint}
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-[1.6rem_11rem_minmax(0,1fr)] items-center gap-10 text-blue">
+                              <span>
+                                <ImgComponent imgSrc={MinusIcon} />
+                              </span>
+                              <span className="text-start">Use point</span>
+                              <span className="text-start">
+                                {event.point_cost}
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-[13.6rem_minmax(0,1fr)] items-center gap-10 border-t border-dashed pt-16 text-[2rem] text-brand">
+                              <span className="text-start">Rest point</span>
+                              <span className="text-start">
+                                {userInfo.yatPoint - event.point_cost}
+                              </span>
+                            </div>
                           </div>
-                          <div>Really?</div>
-                          <div className="grid grid-cols-2 gap-5 mt-20">
-                            <Button
-                              className="bg-sky-blue text-blue"
-                              onClick={booking}
-                            >
-                              Buy
-                            </Button>
-                            <Button className="w-full bg-sky-red text-red">
-                              Cancel
-                            </Button>
-                          </div>
+                          <Button
+                            className="flex items-center gap-8 w-full bg-brand mt-20 py-14 rounded-[1.4rem] text-white text-center text-[1.6rem]"
+                            onClick={booking}
+                          >
+                            <ImgComponent imgSrc={ConfirmIcon} />
+                            Buy
+                          </Button>
                         </DialogDescription>
                       </DialogHeader>
                     </DialogContent>

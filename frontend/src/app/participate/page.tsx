@@ -2,6 +2,8 @@
 
 import QrcodeIcon from "@/assets/common/QrcodeIcon.svg";
 import CalendarIcon from "@/assets/EventDetail/CalendarIcon.svg";
+import ExpiredIcon from "@/assets/EventDetail/ExpiredIcon.svg";
+import LocationIcon from "@/assets/EventDetail/LocationIcon.svg";
 import LockIcon from "@/assets/EventDetail/LockIcon.svg";
 import UserDefaultIcon from "@/assets/Mypage/UserDefaultIcon.svg";
 import CorrectIcon from "@/assets/Participate/CorrectIcon.svg";
@@ -47,6 +49,9 @@ export default function EventDetail() {
   return (
     <Wrapper>
       <div className="mx-20 mt-20">
+        <div className="flex my-20 text-[2rem] font-normal">
+          Participate Event
+        </div>
         <div className="flex flex-col gap-20 my-10 text-[2rem] font-normal">
           {isEmpty(reservations) ? (
             <div className="flex items-center justify-center w-full h-200 text-[2rem] font-normal">
@@ -56,10 +61,18 @@ export default function EventDetail() {
             reservations.map((reservation) => {
               const status = () => {
                 if (reservation.reservation_status === "completed") {
-                  return "Registration completed";
+                  return "Participated";
+                } else if (reservation.reservation_status === "confirmed") {
+                  return "Expired";
                 }
 
-                return "Registration rejected";
+                return "Not Invited";
+              };
+
+              const expired = () => {
+                const now = new Date();
+                const eventStart = new Date(reservation.event_start_at);
+                return now > eventStart;
               };
 
               return (
@@ -78,7 +91,8 @@ export default function EventDetail() {
                       height={200}
                       className="w-80! h-80! rounded-xl"
                     />
-                    {reservation.reservation_status === "confirmed" ? (
+                    {!expired() &&
+                    reservation.reservation_status === "confirmed" ? (
                       <Dialog>
                         <DialogTrigger className="h-fit">
                           <ImgComponent imgSrc={QrcodeIcon} />
@@ -123,6 +137,8 @@ export default function EventDetail() {
                         className={clsx(
                           reservation.reservation_status === "completed"
                             ? "bg-mid-blue text-blue"
+                            : reservation.reservation_status === "confirmed"
+                            ? "bg-gray5 text-gray6"
                             : "bg-sky-red text-red",
                           "flex items-center gap-3 h-fit rounded-full px-6 py-4 text-[0.8rem]"
                         )}
@@ -131,6 +147,8 @@ export default function EventDetail() {
                           imgSrc={
                             reservation.reservation_status === "completed"
                               ? CorrectIcon
+                              : reservation.reservation_status === "confirmed"
+                              ? ExpiredIcon
                               : IncorrectIcon
                           }
                         />
@@ -158,14 +176,14 @@ export default function EventDetail() {
                   <div>
                     <div className="flex items-center">
                       <ImgComponent
-                        imgSrc={CalendarIcon}
+                        imgSrc={LocationIcon}
                         className="mr-8 p-6 border border-#EFF3F6 rounded-lg"
                       />
                       <div className="text-[1.2rem] font-normal text-[#475569]">
                         Location
                       </div>
                     </div>
-                    <div className="mt-7 text-[1rem] font-normal">
+                    <div className="bg-[#E8F1FF] p-10 rounded-r-[1rem] rounded-b-[1rem] mt-7 text-[1rem] font-normal">
                       {reservation.event_location}
                     </div>
                   </div>

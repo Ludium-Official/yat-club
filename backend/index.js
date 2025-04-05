@@ -145,6 +145,33 @@ app.post("/user/edit/point", withAuth, (req, res) => {
   });
 });
 
+app.post("/user/add/point", withAuth, (req, res) => {
+  const { userId, point } = req.body;
+
+  if (!userId) {
+    return res.status(400).send("Invalid input: check userId and point.");
+  }
+
+  const query = `
+    UPDATE yatclub.Users
+    SET yatPoint = yatPoint + ?
+    WHERE id = ?
+  `;
+
+  db.query(query, [point, userId], (err, results) => {
+    if (err) {
+      console.error("Database query error:", err.message);
+      return res.status(500).send("Database query error");
+    }
+
+    if (results.affectedRows > 0) {
+      res.json({ success: true, message: "User point updated successfully." });
+    } else {
+      res.status(404).send("User not found.");
+    }
+  });
+});
+
 // Events
 app.post("/events", withAuth, (req, res) => {
   const { isPast } = req.body;

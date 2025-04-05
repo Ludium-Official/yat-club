@@ -25,6 +25,8 @@
   --color-gray2: var(--gray2);
   --color-gray3: var(--gray3);
   --color-gray4: var(--gray4);
+  --color-gray5: var(--gray5);
+  --color-gray6: var(--gray6);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -85,6 +87,8 @@
   --gray2: #e2e8f0;
   --gray3: #e4e4e4;
   --gray4: #f3f3f3;
+  --gray5: #c9cdd3;
+  --gray6: #393f47;
 
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);
@@ -140,6 +144,8 @@
   --gray2: #e2e8f0;
   --gray3: #e4e4e4;
   --gray4: #f3f3f3;
+  --gray5: #c9cdd3;
+  --gray6: #393f47;
 
   --background: linear-gradient(
     to bottom,
