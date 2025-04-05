@@ -122,7 +122,7 @@ export default function ParticipateDetail() {
                   onClick={() => setIsScanning(true)}
                   className="px-6 py-5 border border-[#87B8FF] rounded-[0.8rem] text-[1rem] text-[#87B8FF]"
                 >
-                  QR Scan
+                  QR scan
                 </Button>
               ) : (
                 <Button

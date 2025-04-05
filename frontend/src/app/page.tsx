@@ -33,7 +33,7 @@ export default function Home() {
 
   return (
     <Wrapper>
-      <div className="mt-10">
+      <div className="mt-20">
         <EventList
           isPast={isPast}
           setIsPast={setIsPast}

@@ -93,17 +93,25 @@ const Header: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-between px-20 py-10">
+    <div className="flex items-center justify-between px-20 py-10 border-b">
       <Link href="/">
         <ImgComponent imgSrc={isLoggedIn ? OpHeaderLogo : HeaderLogo} />
       </Link>
-      <div className="flex items-center gap-20">
+      <div className="flex items-center gap-10">
         {userInfo?.auth === "ADMIN" && (
           <Link
             href="/create"
-            className="bg-mid-blue px-10 py-8 rounded-[1rem] text-blue text-[1rem] border border-mid-blue2"
+            className="bg-mid-blue px-12 py-6 rounded-[1rem] text-blue text-[1.2rem] border border-mid-blue2"
           >
             Create event
+          </Link>
+        )}
+        {userInfo?.auth !== "ADMIN" && (
+          <Link
+            href="/membership"
+            className="bg-mid-blue px-12 py-6 rounded-[1rem] text-blue text-[1.2rem] border border-mid-blue2"
+          >
+            Membership
           </Link>
         )}
         {isLoggedIn ? (
