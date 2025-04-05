@@ -4,11 +4,14 @@ import EditIcon from "@/assets/common/EditIcon.svg";
 import ArrowIcon from "@/assets/Mypage/ArrowIcon.svg";
 import LogoutIcon from "@/assets/Mypage/LogoutIcon.svg";
 import PointIcon from "@/assets/Mypage/PointIcon.svg";
+import ProfileConfirmIcon from "@/assets/Mypage/ProfileConfirmIcon.svg";
+import ProfileEditIcon from "@/assets/Mypage/ProfileEditIcon.svg";
 import UserDefaultIcon from "@/assets/Mypage/UserDefaultIcon.svg";
 import EventList from "@/components/EventList";
 import ImgComponent from "@/components/Image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import Wrapper from "@/components/Wrapper";
 import {
   getWepinSDK,
@@ -23,18 +26,22 @@ import { commaNumber, division } from "@/lib/utils";
 import { ParseEventType } from "@/types/eventType";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 export default function Mypage() {
   const route = useRouter();
   const dispatch = useAppDispatch();
   const userInfo = useAppSelector(selectUserInfo);
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isEditName, setIsEditName] = useState(false);
   const [userName, setUserName] = useState(userInfo?.name || "");
   const [isPast, setIsPast] = useState(false);
   const [events, setEvents] = useState<ParseEventType>();
   const [page, setPage] = useState(1);
+  const [previewImg, setPreviewImg] = useState("");
+  const [isEditProfileImg, setIsEditProfileImg] = useState(false);
 
   const statusSDK = async () => {
     const wepinSDK = getWepinSDK();
@@ -109,6 +116,42 @@ export default function Mypage() {
     }
   };
 
+  const profileImgChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const fileInput = fileInputRef.current;
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      const file = fileInput.files[0];
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "profile");
+
+      try {
+        const response = await fetchData(
+          "/upload-img-in-bucket",
+          "POST",
+          formData,
+          true
+        );
+
+        const profileUrl = response.url;
+
+        await fetchData("/user/edit/profile", "POST", {
+          userId: userInfo?.userId,
+          profileUrl,
+        });
+
+        toast.success("Profile image updated successfully!");
+        setIsEditProfileImg(false);
+      } catch (err) {
+        console.error("Error uploading file:", err);
+      }
+    } else {
+      console.error("No file selected");
+    }
+  };
+
   return (
     <Wrapper>
       {userInfo ? (
@@ -121,47 +164,91 @@ export default function Mypage() {
               }}
               className="drop-shadow-[0.3rem_0.3rem_1.3rem_rgba(54,51,105,0.1)] mx-20 mt-30 mb-11 pl-20 pr-43 py-24 rounded-[2rem] border border-gray2 bg-white"
             >
-              <div className="flex gap-20">
-                <ImgComponent imgSrc={UserDefaultIcon} />
-                <div className="flex flex-col w-full">
-                  {isEditName ? (
-                    <form
-                      className="flex items-center gap-3"
-                      onSubmit={nameChange}
-                    >
-                      <Input
-                        value={userName}
-                        className="min-w-100 max-w-150 h-[2.4rem] p-10 rounded-md"
-                        onChange={(e) => setUserName(e.target.value)}
-                        required
-                      />
+              <div className="flex items-center gap-20">
+                <div>
+                  <form className="relative" onSubmit={profileImgChange}>
+                    <div
+                      style={{
+                        backgroundImage: `url(${
+                          previewImg ||
+                          userInfo?.profile_url ||
+                          UserDefaultIcon.src
+                        })`,
+                      }}
+                      className="aspect-square w-100 bg-no-repeat bg-cover bg-center rounded-full"
+                    />
+                    {isEditProfileImg ? (
                       <Button
-                        className="p-5 rounded-md border border-gray3 text-[1rem]"
+                        className="absolute bottom-0 right-0 p-0"
                         type="submit"
                       >
-                        Edit
+                        <ImgComponent imgSrc={ProfileConfirmIcon} />
                       </Button>
-                    </form>
-                  ) : (
-                    <div className="flex items-center gap-6">
+                    ) : (
+                      <Label
+                        htmlFor="profile"
+                        className="absolute bottom-0 right-0 p-0"
+                      >
+                        <ImgComponent imgSrc={ProfileEditIcon} />
+                      </Label>
+                    )}
+                    <Input
+                      id="profile"
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setPreviewImg(URL.createObjectURL(file));
+                          setIsEditProfileImg(true);
+                        } else {
+                          setPreviewImg("");
+                        }
+                      }}
+                    />
+                  </form>
+                </div>
+                <div className="flex flex-col w-full">
+                  <div className="flex items-center gap-6">
+                    {isEditName ? (
+                      <form
+                        className="flex items-center gap-3"
+                        onSubmit={nameChange}
+                      >
+                        <Input
+                          value={userName}
+                          className="min-w-100 max-w-150 h-[2.4rem] p-10 rounded-md"
+                          onChange={(e) => setUserName(e.target.value)}
+                          required
+                        />
+                        <Button
+                          className="p-5 rounded-md border border-gray3 text-[1rem]"
+                          type="submit"
+                        >
+                          Edit
+                        </Button>
+                      </form>
+                    ) : (
                       <div className="text-[2rem] font-normal">
                         {userInfo.name}
                       </div>
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => setIsEditName((prev) => !prev)}
-                      >
-                        <ImgComponent imgSrc={EditIcon.src} />
-                      </div>
+                    )}
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => setIsEditName((prev) => !prev)}
+                    >
+                      <ImgComponent imgSrc={EditIcon} />
                     </div>
-                  )}
+                  </div>
                   <div className="text-[0.8rem] text-gray1">
                     {userInfo.email}
                   </div>
                   <div className="grid grid-cols-1 gap-7 mt-14">
                     <div className="flex flex-col bg-white p-8 rounded-[1rem] font-medium">
                       <div className="flex gap-2 text-[1.2rem] border-b border-[rgb(97 127 179 / 30%)] pb-4">
-                        <ImgComponent imgSrc={PointIcon.src} />
+                        <ImgComponent imgSrc={PointIcon} />
                         <div className="pl-4 text-[#256BD5]">Point</div>
                       </div>
                       <div className="mt-4 text-[2.8rem] text-center text-[#256BD5]">

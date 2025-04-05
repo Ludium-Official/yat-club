@@ -9,4 +9,5 @@ export interface UserType {
   walletId: string;
   yatPoint: number;
   name: string;
+  profile_url?: string;
 }

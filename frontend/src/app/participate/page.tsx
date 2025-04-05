@@ -98,9 +98,14 @@ export default function EventDetail() {
                             </DialogTitle>
                             <DialogDescription className="pt-20 border-t border-dashed">
                               <div className="flex items-center gap-16 mx-15">
-                                <ImgComponent
-                                  imgSrc={UserDefaultIcon}
-                                  className="w-48! h-48!"
+                                <div
+                                  style={{
+                                    backgroundImage: `url(${
+                                      userInfo?.profile_url ||
+                                      UserDefaultIcon.src
+                                    })`,
+                                  }}
+                                  className="aspect-square w-48 bg-no-repeat bg-cover bg-center rounded-full mr-9 text-[#2B3F5D]"
                                 />
                                 <div className="text-[1.8rem] text-[#5A5D61] text-start">
                                   {userInfo?.name}

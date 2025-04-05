@@ -129,6 +129,7 @@ export default function CreateEvent() {
       }
 
       formData.append("file", file);
+      formData.append("folder", "events");
 
       const response = await fetchData(
         "/upload-img-in-bucket",

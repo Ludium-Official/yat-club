@@ -205,9 +205,13 @@ export default function ParticipateDetail() {
                   className="flex items-center justify-between px-10 py-8 border border-[#D9D9D9] rounded-[1rem]"
                 >
                   <div className="flex items-center">
-                    <ImgComponent
-                      imgSrc={UserDefaultIcon}
-                      className="w-36! h-36! mr-9 text-[#2B3F5D]"
+                    <div
+                      style={{
+                        backgroundImage: `url(${
+                          userInfo?.profile_url || UserDefaultIcon.src
+                        })`,
+                      }}
+                      className="aspect-square w-36 bg-no-repeat bg-cover bg-center rounded-full mr-9 text-[#2B3F5D]"
                     />
                     <div>
                       <div className="text-[1.2rem]">

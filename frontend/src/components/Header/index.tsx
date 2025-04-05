@@ -95,7 +95,7 @@ const Header: React.FC = () => {
   return (
     <div className="flex items-center justify-between px-20 py-10">
       <Link href="/">
-        <ImgComponent imgSrc={isLoggedIn ? OpHeaderLogo.src : HeaderLogo.src} />
+        <ImgComponent imgSrc={isLoggedIn ? OpHeaderLogo : HeaderLogo} />
       </Link>
       <div className="flex items-center gap-20">
         {userInfo?.auth === "ADMIN" && (
@@ -108,7 +108,14 @@ const Header: React.FC = () => {
         )}
         {isLoggedIn ? (
           <Link className="rounded-full w-30 h-30" href="/mypage">
-            <ImgComponent imgSrc={UserDefaultIcon} />
+            <div
+              style={{
+                backgroundImage: `url(${
+                  userInfo?.profile_url || UserDefaultIcon.src
+                })`,
+              }}
+              className="aspect-square w-30 bg-no-repeat bg-cover bg-center rounded-full"
+            />
           </Link>
         ) : (
           <Button

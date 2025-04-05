@@ -111,7 +111,7 @@ const EventList: React.FC<IEventListProps> = ({
                       <div>{event.location}</div>
                     </div>
                     <div className="flex gap-8">
-                      <ImgComponent imgSrc={UsersIcon.src} />
+                      <ImgComponent imgSrc={UsersIcon} />
                       <div className="text-sky-blue">
                         {event.reservation_count} / {event.max_participants}
                       </div>

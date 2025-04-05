@@ -89,6 +89,35 @@ app.post("/user/edit/name", withAuth, (req, res) => {
   });
 });
 
+app.post("/user/edit/profile", withAuth, (req, res) => {
+  const { userId, profileUrl } = req.body;
+
+  if (!userId || !profileUrl) {
+    return res
+      .status(400)
+      .send("Invalid input: userId and profileUrl are required.");
+  }
+
+  const query = `
+    UPDATE yatclub.Users
+    SET profile_url = ?
+    WHERE userId = ?
+  `;
+
+  db.query(query, [profileUrl, userId], (err, results) => {
+    if (err) {
+      console.error("Database query error:", err.message);
+      return res.status(500).send("Database query error");
+    }
+
+    if (results.affectedRows > 0) {
+      res.json({ success: true, message: "User name updated successfully." });
+    } else {
+      res.status(404).send("User not found.");
+    }
+  });
+});
+
 app.post("/user/edit/point", withAuth, (req, res) => {
   const { userId, point } = req.body;
 
@@ -386,13 +415,14 @@ app.post(
     try {
       const bucket = storage.bucket("yat-club");
       const file = req.file;
+      const { folder } = req.body;
 
       if (!file) {
         console.error("No file uploaded.");
         return res.status(400).send("No file uploaded.");
       }
 
-      const imgName = `events/${uuidv4()}`;
+      const imgName = `${folder}/${uuidv4()}`;
 
       const blob = bucket.file(imgName);
       const blobStream = blob.createWriteStream({

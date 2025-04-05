@@ -143,7 +143,7 @@ export default function EventDetail() {
                       Description
                     </div>
                   </div>
-                  <div className="mt-7 text-[1rem] font-normal">
+                  <div className="bg-[#E8F1FF] p-10 rounded-r-[1rem] rounded-b-[1rem] mt-7 text-[1rem] font-normal">
                     {event.description}
                   </div>
                 </div>
@@ -157,7 +157,7 @@ export default function EventDetail() {
                       Location
                     </div>
                   </div>
-                  <div className="mt-7 text-[1rem] font-normal">
+                  <div className="bg-[#E8F1FF] p-10 rounded-r-[1rem] rounded-b-[1rem] mt-7 text-[1rem] font-normal">
                     {event.location}
                   </div>
                 </div>
