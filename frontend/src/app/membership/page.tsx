@@ -29,6 +29,7 @@ export default function Membership() {
         denom: string;
         point: number;
         img: string;
+        background: string;
       }
     | undefined
   >();
@@ -54,6 +55,7 @@ export default function Membership() {
         denom: "USD",
         point: 2500000,
         img: FirstTierLogo,
+        background: "linear-gradient(to right bottom, #88D9FF 0%, #1C74F9 83%)",
       },
       {
         id: 2,
@@ -74,6 +76,7 @@ export default function Membership() {
         denom: "YAT",
         point: 12000000,
         img: LifeTimeLogo,
+        background: "linear-gradient(to right bottom, #88D9FF 0%, #4537FF 83%)",
       },
     ];
   }, []);
@@ -162,8 +165,7 @@ export default function Membership() {
             </div>
             <div
               style={{
-                background:
-                  "linear-gradient(to right bottom, #88D9FF 0%, #1C74F9 83%)",
+                background: membership?.background,
               }}
               className="rounded-[1.2rem] py-17 text-white"
             >
