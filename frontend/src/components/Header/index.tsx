@@ -1,5 +1,6 @@
 "use client";
 
+import { getUser, setRegister } from "@/app/actions/user";
 import HeaderLogo from "@/assets/Header/HeaderLogo.svg";
 import OpHeaderLogo from "@/assets/Header/OpHeaderLogo.svg";
 import UserDefaultIcon from "@/assets/Header/UserDefaultIcon.svg";
@@ -17,7 +18,6 @@ import {
   statusSDK,
   userLoginSDK,
 } from "@/lib/features/wepin/useWepin";
-import fetchData from "@/lib/fetchData";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import Link from "next/link";
 import { isEmpty } from "ramda";
@@ -30,22 +30,27 @@ const Header: React.FC = () => {
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   const callUser = useCallback(async () => {
-    const user = await userLoginSDK();
-    const findUser = await fetchData("/user", "POST", {
-      userId: user.userInfo?.userId,
-    });
+    try {
+      const user = await userLoginSDK();
 
-    dispatch(setUserInfo(!isEmpty(findUser) ? findUser[0] : null));
+      if (user.userInfo) {
+        const findUser = await getUser(user.userInfo.userId);
 
-    return {
-      isSignIn: !isEmpty(findUser),
-      userData: {
-        email: user.userInfo?.email,
-        provider: user.userInfo?.provider,
-        userId: user.userInfo?.userId,
-        walletId: user.walletId,
-      },
-    };
+        dispatch(setUserInfo(!isEmpty(findUser) ? findUser[0] : null));
+
+        return {
+          isSignIn: !isEmpty(findUser),
+          userData: {
+            email: user.userInfo?.email,
+            provider: user.userInfo?.provider,
+            userId: user.userInfo?.userId,
+            walletId: user.walletId,
+          },
+        };
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }, [dispatch]);
 
   const getBalance = useCallback(async () => {
@@ -77,16 +82,18 @@ const Header: React.FC = () => {
     try {
       const user = await callUser();
 
-      if (!user.isSignIn) {
-        await fetchData("/register", "POST", {
-          email: user.userData?.email,
-          provider: user.userData?.provider,
-          userId: user.userData?.userId,
-          walletId: user.userData.walletId,
-        });
-      }
+      if (user) {
+        if (!user.isSignIn && user.userData && user.userData.walletId) {
+          await setRegister(
+            user.userData.email,
+            user.userData.provider,
+            user.userData.userId,
+            user.userData.walletId
+          );
+        }
 
-      await getBalance();
+        await getBalance();
+      }
     } catch (err) {
       console.error(err);
     }

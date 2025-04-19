@@ -1,5 +1,8 @@
 "use client";
 
+import { getEvent } from "@/app/actions/event";
+import { getReservation, setBooking } from "@/app/actions/reservation";
+import { minusUserPoint } from "@/app/actions/user";
 import EditIcon from "@/assets/common/EditIcon.svg";
 import ArrowIcon from "@/assets/EventDetail/ArrowIcon.svg";
 import CalendarIcon from "@/assets/EventDetail/CalendarIcon.svg";
@@ -23,10 +26,10 @@ import {
 } from "@/components/ui/dialog";
 import Wrapper from "@/components/Wrapper";
 import { selectUserInfo } from "@/lib/features/wepin/loginSlice";
-import fetchData from "@/lib/fetchData";
 import { useAppSelector } from "@/lib/hooks";
 import { commaNumber } from "@/lib/utils";
 import { EventType } from "@/types/eventType";
+import { ReservationType } from "@/types/reservationType";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -39,21 +42,18 @@ export default function EventDetail() {
   const userInfo = useAppSelector(selectUserInfo);
 
   const [event, setEvents] = useState<EventType>();
-  const [reservation, setReservation] = useState();
+  const [reservation, setReservation] = useState<ReservationType>();
 
   const callEventDetail = useCallback(async () => {
-    const event = await fetchData("/event", "POST", {
-      id,
-    });
+    if (userInfo) {
+      const event = await getEvent(id);
 
-    const reserve = await fetchData("/reservation", "POST", {
-      id,
-      userId: userInfo?.id,
-    });
+      const reserve = await getReservation(id, userInfo.id);
 
-    setEvents(event);
-    setReservation(reserve);
-  }, [id, userInfo?.id]);
+      setEvents(event);
+      setReservation(reserve);
+    }
+  }, [id, userInfo]);
 
   const booking = async () => {
     try {
@@ -61,17 +61,10 @@ export default function EventDetail() {
         const payMethod = event.point_cost ? "point" : "token";
 
         if (event.point_cost) {
-          await fetchData("/user/edit/point", "POST", {
-            userId: userInfo.id,
-            point: event.point_cost,
-          });
+          await minusUserPoint(userInfo.id, event.point_cost);
         }
 
-        await fetchData("/booking", "POST", {
-          userId: userInfo.id,
-          eventId: id,
-          payMethod,
-        });
+        await setBooking(userInfo.id, id, payMethod);
 
         callEventDetail();
         toast("Reservation!");

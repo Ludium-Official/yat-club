@@ -7,12 +7,12 @@ import MoonPayWidgetForMembership from "@/components/MoonPayWidgetForMembership"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Wrapper from "@/components/Wrapper";
 import { selectUserInfo } from "@/lib/features/wepin/loginSlice";
-import fetchData from "@/lib/fetchData";
 import { useAppSelector } from "@/lib/hooks";
 import { commaNumber } from "@/lib/utils";
 import clsx from "clsx";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { plusUserPoint } from "../actions/user";
 
 export default function Membership() {
   const userInfo = useAppSelector(selectUserInfo);
@@ -84,10 +84,7 @@ export default function Membership() {
   const booking = async () => {
     try {
       if (userInfo && membership) {
-        await fetchData("/user/add/point", "POST", {
-          userId: userInfo.id,
-          point: membership.point,
-        });
+        await plusUserPoint(userInfo.id, membership.point);
 
         toast.success("Success!");
       }

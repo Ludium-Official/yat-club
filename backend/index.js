@@ -118,7 +118,7 @@ app.post("/user/edit/profile", withAuth, (req, res) => {
   });
 });
 
-app.post("/user/edit/point", withAuth, (req, res) => {
+app.post("/user/minus/point", withAuth, (req, res) => {
   const { userId, point } = req.body;
 
   if (!userId || !point || point <= 0) {

@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const division = (array: [], count: number) => {
+export const division = <T>(array: T[], count: number) => {
   const length = array.length;
   const divide =
     Math.floor(length / count) + (Math.floor(length % count) > 0 ? 1 : 0);

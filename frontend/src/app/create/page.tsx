@@ -38,7 +38,6 @@ import { Textarea } from "@/components/ui/textarea";
 import Wrapper from "@/components/Wrapper";
 import { selectAccounts } from "@/lib/features/wepin/accountsSlice";
 import { selectUserInfo } from "@/lib/features/wepin/loginSlice";
-import fetchData from "@/lib/fetchData";
 import { useAppSelector } from "@/lib/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
@@ -47,6 +46,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { createEvent } from "../actions/event";
+import { uploadImgInBucket } from "../actions/gcs";
 
 export default function CreateEvent() {
   const userInfo = useAppSelector(selectUserInfo);
@@ -131,26 +132,21 @@ export default function CreateEvent() {
       formData.append("file", file);
       formData.append("folder", "events");
 
-      const response = await fetchData(
-        "/upload-img-in-bucket",
-        "POST",
-        formData,
-        true
-      );
+      const response = await uploadImgInBucket(formData);
 
-      await fetchData("/event/create", "POST", {
-        userId: userInfo.id,
-        title: data.title,
-        description: data.description,
-        image_url: response.url,
-        is_private: data.private,
-        max_participants: Number(data.guests),
-        receive_address: accountRecvAddr,
-        start_at: dayjs(data.date).format("YYYY-MM-DD HH:mm:ss"),
-        location: data.location,
-        price: Number(data.price),
-        target: data.target,
-      });
+      await createEvent(
+        userInfo.id,
+        data.title,
+        data.description,
+        response.url,
+        data.private,
+        Number(data.guests),
+        accountRecvAddr || "",
+        data.date,
+        data.location,
+        Number(data.price),
+        data.target
+      );
 
       toast.success("Success!");
 

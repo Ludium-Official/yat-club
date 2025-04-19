@@ -2,10 +2,10 @@
 
 import EventList from "@/components/EventList";
 import Wrapper from "@/components/Wrapper";
-import fetchData from "@/lib/fetchData";
 import { division } from "@/lib/utils";
 import { ParseEventType } from "@/types/eventType";
 import { useEffect, useState } from "react";
+import { getEvents } from "./actions/event";
 
 export default function Home() {
   const [isPast, setIsPast] = useState(false);
@@ -14,9 +14,7 @@ export default function Home() {
 
   useEffect(() => {
     const init = async () => {
-      const events = await fetchData("/events", "POST", {
-        isPast,
-      });
+      const events = await getEvents(isPast);
 
       const totalEvent = events.length;
       const splitEvents = division(events, 5);

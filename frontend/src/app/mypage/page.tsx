@@ -20,7 +20,6 @@ import {
   setUserInfo,
 } from "@/lib/features/wepin/loginSlice";
 import { logoutSDK, openWidgetSDK } from "@/lib/features/wepin/useWepin";
-import fetchData from "@/lib/fetchData";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { commaNumber, division } from "@/lib/utils";
 import { ParseEventType } from "@/types/eventType";
@@ -28,6 +27,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { getUserEvents } from "../actions/event";
+import { uploadImgInBucket } from "../actions/gcs";
+import { editUserName, editUserProfile, getUser } from "../actions/user";
 
 export default function Mypage() {
   const route = useRouter();
@@ -78,19 +80,18 @@ export default function Mypage() {
 
   useEffect(() => {
     const init = async () => {
-      const events = await fetchData("/user-events", "POST", {
-        isPast,
-        userId: userInfo?.id,
-      });
+      if (userInfo) {
+        const events = await getUserEvents(isPast, userInfo.id);
 
-      const totalEvent = events.length;
-      const splitEvents = division(events, 5);
+        const totalEvent = events.length;
+        const splitEvents = division(events, 5);
 
-      setEvents({
-        event: splitEvents,
-        totalEvent: totalEvent,
-      });
-      setPage(1);
+        setEvents({
+          event: splitEvents,
+          totalEvent: totalEvent,
+        });
+        setPage(1);
+      }
     };
 
     init();
@@ -100,17 +101,14 @@ export default function Mypage() {
     e.preventDefault();
 
     try {
-      await fetchData("/user/edit/name", "POST", {
-        userId: userInfo?.userId,
-        userName,
-      });
+      if (userInfo) {
+        await editUserName(userInfo.userId, userName);
 
-      const findUser = await fetchData("/user", "POST", {
-        userId: userInfo?.userId,
-      });
+        const findUser = await getUser(userInfo.userId);
 
-      dispatch(setUserInfo(findUser[0]));
-      setIsEditName(false);
+        dispatch(setUserInfo(findUser[0]));
+        setIsEditName(false);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -129,22 +127,16 @@ export default function Mypage() {
       formData.append("oldImageUrl", userInfo?.profile_url || "");
 
       try {
-        const response = await fetchData(
-          "/upload-img-in-bucket",
-          "POST",
-          formData,
-          true
-        );
+        if (userInfo) {
+          const response = await uploadImgInBucket(formData);
 
-        const profileUrl = response.url;
+          const profileUrl = response.url;
 
-        await fetchData("/user/edit/profile", "POST", {
-          userId: userInfo?.userId,
-          profileUrl,
-        });
+          await editUserProfile(userInfo.userId, profileUrl);
 
-        toast.success("Profile image updated successfully!");
-        setIsEditProfileImg(false);
+          toast.success("Profile image updated successfully!");
+          setIsEditProfileImg(false);
+        }
       } catch (err) {
         console.error("Error uploading file:", err);
       }

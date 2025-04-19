@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/dialog";
 import Wrapper from "@/components/Wrapper";
 import { selectUserInfo } from "@/lib/features/wepin/loginSlice";
-import fetchData from "@/lib/fetchData";
 import { useAppSelector } from "@/lib/hooks";
 import { ReservationType } from "@/types/reservationType";
 import clsx from "clsx";
@@ -28,6 +27,7 @@ import Link from "next/link";
 import { isEmpty } from "ramda";
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
+import { getReservations } from "../actions/reservation";
 
 export default function EventDetail() {
   const userInfo = useAppSelector(selectUserInfo);
@@ -36,11 +36,11 @@ export default function EventDetail() {
 
   useEffect(() => {
     const init = async () => {
-      const events = await fetchData("/reservations", "POST", {
-        userId: userInfo?.id,
-      });
+      if (userInfo) {
+        const reservations = await getReservations(userInfo.id);
 
-      setReservations(events);
+        setReservations(reservations);
+      }
     };
 
     init();

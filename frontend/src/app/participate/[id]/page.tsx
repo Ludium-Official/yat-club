@@ -1,5 +1,7 @@
 "use client";
 
+import { getEvent } from "@/app/actions/event";
+import { editStatus, getOwnReservations } from "@/app/actions/reservation";
 import CalendarIcon from "@/assets/EventCreate/CalendarIcon.svg";
 import LocationIcon from "@/assets/EventCreate/LocationIcon.svg";
 import UsersIcon from "@/assets/EventCreate/UsersIcon.svg";
@@ -11,7 +13,6 @@ import ImgComponent from "@/components/Image";
 import { Button } from "@/components/ui/button";
 import Wrapper from "@/components/Wrapper";
 import { selectUserInfo } from "@/lib/features/wepin/loginSlice";
-import fetchData from "@/lib/fetchData";
 import { useAppSelector } from "@/lib/hooks";
 import { EventType } from "@/types/eventType";
 import { ReservationForUserType } from "@/types/reservationType";
@@ -35,13 +36,9 @@ export default function ParticipateDetail() {
   );
 
   const callEventDetail = useCallback(async () => {
-    const event = await fetchData("/event", "POST", {
-      id,
-    });
+    const event = await getEvent(id);
 
-    const reservations = await fetchData("/own/reservation", "POST", {
-      eventId: event.id,
-    });
+    const reservations = await getOwnReservations(event.id);
 
     setEvents(event);
     setReservations(reservations);
@@ -52,11 +49,7 @@ export default function ParticipateDetail() {
     userId: string,
     status: "confirmed" | "rejected" | "completed"
   ) => {
-    await fetchData("/reservation/edit-status", "POST", {
-      id,
-      userId,
-      status,
-    });
+    await editStatus(id, userId, status);
   };
 
   useEffect(() => {
