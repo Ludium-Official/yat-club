@@ -71,7 +71,7 @@ References above are the current considerations. As the system develops, the tea
 
 * **[Janbogo Asset](https://x.com/yat_club/status/1893918790083031331)**
 * **[Ludium](https://github.com/Ludium-Official/yat-club)**
-* **[Junain](https://earn.superteam.fun/t/pink-involved-16/)**
+* **[Juniahn](https://earn.superteam.fun/t/pink-involved-16/)**
 * **[Rocket](https://earn.superteam.fun/t/hani/)**
 * **[Jihyun Park](https://earn.superteam.fun/t/9w/)**
 
